@@ -34,11 +34,15 @@ ENV PG_SHA256 ecbed20056296a65b6a4f5526c477e3ae5cc284cb01a15507785ddb23831e9a4
 
 RUN set -ex \
 	\
+	&& apk add --no-cache --virtual .dd2 \
+	dos2unix
+
+RUN set -ex \
+	\
 	&& apk add --no-cache --virtual .fetch-deps \
 		ca-certificates \
 		openssl \
 		tar \
-		dos2unix \
 	\
 	&& wget -O postgresql.tar.bz2 "https://ftp.postgresql.org/pub/source/v$PG_VERSION/postgresql-$PG_VERSION.tar.bz2" \
 	&& echo "$PG_SHA256 *postgresql.tar.bz2" | sha256sum -c - \
@@ -157,7 +161,8 @@ RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
 RUN dos2unix /usr/local/bin/docker-entrypoint.sh
 RUN dos2unix /docker-entrypoint-initdb.d/setup-replication.sh
-RUN apk del dos2unix
+RUN apk del .dd2
+RUN apk add --update iputils
 
 RUN chmod +x  /docker-entrypoint-initdb.d/setup-replication.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]

@@ -25,12 +25,14 @@ file_env() {
 }
 
 
-if [ ${SYS_GROUP} != "postgres" ]; then
+if [ ${SYS_USER} != "postgres" ]; then
     getent group ${SYS_GROUP} || addgroup -S ${SYS_GROUP}
     getent passwd ${SYS_USER} || adduser -S ${SYS_USER}  -G ${SYS_GROUP} -s "/bin/bash" -h "${PGDATA}"
 fi
 
 if [ "${1:0:1}" = '-' ]; then
+	
+	echo "here line 35"
 	set -- postgres "$@"
 fi
 
@@ -51,7 +53,7 @@ if [ "$1" = 'postgres' ] && [ "$(id -u)" = '0' ]; then
 		chmod 770 "$POSTGRES_INITDB_XLOGDIR"
 	fi
 
-	exec su-exec ${SYS_USER} "$BASH_SOURCE" "$@"
+	exec su-exec "${SYS_USER}:${SYS_GROUP}" "$BASH_SOURCE" "$@"
 fi
 
 if [ "$1" = 'postgres' ]; then
@@ -133,7 +135,7 @@ if [ "$1" = 'postgres' ]; then
 		# internal start of server in order to allow set-up using psql-client
 		# does not listen on external TCP/IP and waits until start finishes
 		PGUSER="${PGUSER:-$POSTGRES_USER}" \
-	  su-exec ${SYS_USER} pg_ctl -D "$PGDATA" \
+	  	pg_ctl -D "$PGDATA" \
 			-o "-c listen_addresses=''" \
 			-w start
 
@@ -171,10 +173,10 @@ if [ "$1" = 'postgres' ]; then
 			echo
 		done
 
-    if [ -n "$REPLICATE_FROM"  ]; then
+   
       PGUSER="${PGUSER:-$POSTGRES_USER}" \
-      su-exec ${SYS_USER} pg_ctl -D "$PGDATA" -m fast -w stop
-    fi
+      pg_ctl -D "$PGDATA" -m fast -w stop
+
 		unset PGPASSWORD
 
 		echo
@@ -183,4 +185,4 @@ if [ "$1" = 'postgres' ]; then
 	fi
 fi
 
-exec su-exec ${SYS_USER} "$@"
+exec "$@"
