@@ -171,9 +171,10 @@ if [ "$1" = 'postgres' ]; then
 			echo
 		done
 
-		PGUSER="${PGUSER:-$POSTGRES_USER}" \
-		su-exec ${SYS_USER} pg_ctl -D "$PGDATA" -m fast -w stop
-
+    if [ -n "$REPLICATE_FROM"  ]; then
+      PGUSER="${PGUSER:-$POSTGRES_USER}" \
+      su-exec ${SYS_USER} pg_ctl -D "$PGDATA" -m fast -w stop
+    fi
 		unset PGPASSWORD
 
 		echo

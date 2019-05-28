@@ -152,10 +152,14 @@ RUN mkdir -p "$PGDATA" && chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA" && chmod 7
 VOLUME /var/lib/postgresql/data
 
 COPY docker-entrypoint.sh /usr/local/bin/
+COPY setup-replication.sh /docker-entrypoint-initdb.d/
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
-RUN dos2unix /usr/local/bin/docker-entrypoint.sh && apk del dos2unix
-RUN chmod +x  /usr/local/bin/docker-entrypoint.sh
+RUN dos2unix /usr/local/bin/docker-entrypoint.sh
+RUN dos2unix /docker-entrypoint-initdb.d/setup-replication.sh
+RUN apk del dos2unix
+
+RUN chmod +x  /docker-entrypoint-initdb.d/setup-replication.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 5432
