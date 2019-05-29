@@ -31,8 +31,6 @@ if [ ${SYS_USER} != "postgres" ]; then
 fi
 
 if [ "${1:0:1}" = '-' ]; then
-	
-	echo "here line 35"
 	set -- postgres "$@"
 fi
 
@@ -40,7 +38,7 @@ fi
 if [ "$1" = 'postgres' ] && [ "$(id -u)" = '0' ]; then
 	mkdir -p "$PGDATA"
 	chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
-	chmod 770 "$PGDATA"
+	chmod 750 "$PGDATA"
 
 	mkdir -p /var/run/postgresql
 	chown -R ${SYS_USER}:${SYS_GROUP} /var/run/postgresql
@@ -50,7 +48,7 @@ if [ "$1" = 'postgres' ] && [ "$(id -u)" = '0' ]; then
 	if [ "$POSTGRES_INITDB_XLOGDIR" ]; then
 		mkdir -p "$POSTGRES_INITDB_XLOGDIR"
 		chown -R ${SYS_USER}:${SYS_GROUP} "$POSTGRES_INITDB_XLOGDIR"
-		chmod 770 "$POSTGRES_INITDB_XLOGDIR"
+		chmod 750 "$POSTGRES_INITDB_XLOGDIR"
 	fi
 
 	exec su-exec "${SYS_USER}:${SYS_GROUP}" "$BASH_SOURCE" "$@"
@@ -61,8 +59,8 @@ if [ "$1" = 'postgres' ]; then
 
 	mkdir -p "$PGDATA"
 	chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA" 2>/dev/null || :
-	chmod 770 "$PGDATA" 2>/dev/null || :
-	chmod 770 "$PGDATA" 2>/dev/null || :
+	chmod 750 "$PGDATA" 2>/dev/null || :
+	chmod 750 "$PGDATA" 2>/dev/null || :
 
 	# look specifically for PG_VERSION, as it is expected in the DB dir
 	if [ ! -s "$PGDATA/PG_VERSION" ]; then
