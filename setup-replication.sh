@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ "x$REPLICATE_FROM" == "x" ]; then
+if [ "x$REPLICATE_FROM" == "x" ] && [ -n  "$PG_REP_USER"]; then
 
-echo "host replication all 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
+echo "host replication $PG_REP_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 set -e
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
 CREATE USER $PG_REP_USER REPLICATION LOGIN CONNECTION LIMIT 100 ENCRYPTED PASSWORD '$PG_REP_PASSWORD';
@@ -16,7 +16,7 @@ wal_keep_segments = $PG_WAL_KEEP_SEGMENTS
 hot_standby = on
 EOF
 
-else
+elif [ -n  "$REPLICATE_FROM"]; then
 
 if [ ! -s "$PGDATA/PG_VERSION" ]; then
 echo "*:*:*:$PG_REP_USER:$PG_REP_PASSWORD" > ~/.pgpass
@@ -31,7 +31,7 @@ do
 echo "Waiting for master to connect..."
 sleep 1s
 done
-echo "host replication all 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
+echo "host replication $PG_REP_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 set -e
 cat > ${PGDATA}/recovery.conf <<EOF
 standby_mode = on
