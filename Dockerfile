@@ -38,7 +38,7 @@ RUN set -ex \
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
-RUN ln -s $postgresHome/repmgr.conf /etc/repmgr.conf
+RUN ln -s /etc/repmgr.conf $postgresHome/repmgr.conf
 
 
 # override this on secondary nodes
