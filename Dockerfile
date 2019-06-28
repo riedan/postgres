@@ -53,7 +53,7 @@ RUN cd /root/pg_recall/; make install
 
 
 COPY docker-entrypoint.sh /usr/local/bin/
-COPY scripts/*.sh /docker-entrypoint-initdb.d/
+COPY script/*.sh /docker-entrypoint-initdb.d/
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
 RUN dos2unix /usr/local/bin/docker-entrypoint.sh
