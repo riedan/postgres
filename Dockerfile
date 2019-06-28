@@ -34,6 +34,7 @@ RUN set -ex \
 RUN set -ex \
 	\
 	&& apk add --no-cache  ca-certificates repmgr su-exec bash
+	&& apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted barman
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
