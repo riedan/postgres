@@ -14,18 +14,12 @@ RUN set -eux; \
 
 
 RUN set -ex; \
-	postgresHome="$(getent passwd ${SYS_USER})"; \
-	postgresHome="$(echo "$postgresHome" | cut -d: -f6)"; \
-	[ "$postgresHome" = '/var/lib/postgresql' ]; \
-	mkdir -p "$postgresHome"; \
 	chown -R ${SYS_USER}:${SYS_GROUP} "$postgresHome"
 
 
 # make the "C" locale so postgres will be utf-8 enabled by default
 # alpine doesn't require explicit locale-file generation
 ENV LANG C
-
-RUN mkdir /docker-entrypoint-initdb.d
 
 RUN set -ex \
 	\
