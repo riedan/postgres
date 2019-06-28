@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM postgres:9.6
+FROM postgres:9.6-alpine
 
 ENV SYS_GROUP postgres
 ENV SYS_USER postgres
