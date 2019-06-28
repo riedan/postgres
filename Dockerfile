@@ -30,7 +30,7 @@ RUN mkdir /docker-entrypoint-initdb.d
 RUN set -ex \
 	\
 	&& apk add --no-cache --virtual .dd2 \
-	dos2unix
+	dos2unix postgresql-dev make git
 
 RUN set -ex \
 	\
@@ -48,13 +48,17 @@ ENV PG_REP_USER=repmgr
 ENV PG_REP_DB=repmgr
 
 
+RUN git clone https://github.com/mreithub/pg_recall.git /root/pg_recall/
+RUN cd /root/pg_recall/; make install
+
 
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY scripts/*.sh /docker-entrypoint-initdb.d/
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
 RUN dos2unix /usr/local/bin/docker-entrypoint.sh
-RUN dos2unix /docker-entrypoint-initdb.d/setup-replication.sh
+RUN dos2unix /docker-entrypoint-initdb.d/*.sh
+
 RUN apk del .dd2
 RUN apk add --update iputils
 
