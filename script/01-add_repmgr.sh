@@ -11,6 +11,8 @@ wal_keep_segments = $PG_WAL_KEEP_SEGMENTS
 hot_standby = on
 EOF
 
+chown  ${SYS_USER}:${SYS_GROUP} $postgresHome/repmgr.conf
+
 if [ $(grep -c "replication repmgr" ${PGDATA}/pg_hba.conf) -gt 0 ]; then
     return
 fi
@@ -23,7 +25,7 @@ if [ -z "$PG_REP_PASSWORD" ]; then
 fi
 
 
-echo "CREATE ROLE $PG_REP_USER LOGIN SUPERUSER REPLICATION PASSWORD '$PG_REP_PASSWORD'" | psql -U "$POSTGRES_USER"
+echo "CREATE ROLE $PG_REP_USER LOGIN SUPERUSER REPLICATION PASSWORD '$PG_REP_PASSWORD'" | psql -U "$POSTGRES_USER" --dbname "$POSTGRES_DB"
 createdb -U "$POSTGRES_USER" -O "$PG_REP_USER" "$PG_REP_DB"
 
 echo "host replication $PG_REP_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
