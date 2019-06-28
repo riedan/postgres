@@ -33,7 +33,7 @@ RUN set -ex \
 
 RUN set -ex \
 	\
-	&& apk add --no-cache  ca-certificates repmgr barman su-exec bash
+	&& apk add --no-cache  ca-certificates repmgr su-exec bash
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
