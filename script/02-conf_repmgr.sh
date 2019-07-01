@@ -49,3 +49,6 @@ service_stop_command=pg_ctl -D ${PGDATA} stop -m fast
 service_restart_command=pg_ctl -D ${PGDATA} restart -m fast
 service_reload_command=pg_ctl -D ${PGDATA} reload
 EOF
+
+
+chown  ${SYS_USER}:${SYS_GROUP} $PGDATA/repmgr.conf

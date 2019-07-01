@@ -4,9 +4,6 @@ set -e
 
 cp /usr/local/share/postgresql/postgresql.conf.repmgr $PGDATA/postgresql.conf
 
-
-chown  ${SYS_USER}:${SYS_GROUP} $PGDATA/repmgr.conf
-
 if [ $(grep -c "replication repmgr" ${PGDATA}/pg_hba.conf) -gt 0 ]; then
     return
 fi
