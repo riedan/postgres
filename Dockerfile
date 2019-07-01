@@ -40,7 +40,7 @@ RUN set -ex \
 RUN set -ex \
 	\
 	&& apk add --no-cache --virtual .dd2 \
-	dos2unix curl  make git libxslt-dev \
+	dos2unix curl  make git gcc libxslt-dev \
                      libxml2-dev \
                      libedit-dev \
                      libc-dev \
