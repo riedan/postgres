@@ -52,6 +52,7 @@ RUN git clone https://github.com/mreithub/pg_recall.git /root/pg_recall/
 RUN cd /root/pg_recall/; make install
 
 
+COPY postgresql.conf /usr/local/share/postgresql/postgresql.conf.sample
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY script/*.sh /docker-entrypoint-initdb.d/
 
