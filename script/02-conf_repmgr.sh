@@ -27,7 +27,7 @@ if [ -z "$NODE_HOST" ]; then
 	NODE_HOST=$(hostname -f)
 fi
 
-cat<<EOF > "$postgresHome/repmgr.conf"
+cat<<EOF > "$POSTGRESHOME/repmgr.conf"
 node_id=${my_node}
 node_name=$(hostname -s | sed 's/\W\{1,\}/_/g;')
 conninfo=host='$NODE_HOST' user='$PG_REP_USER' dbname='$PG_REP_DB' connect_timeout=5
