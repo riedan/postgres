@@ -40,14 +40,13 @@ RUN set -ex \
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
-RUN cp /etc/repmgr.conf $PGDATA/repmgr.conf && chown  ${SYS_USER}:${SYS_GROUP} $PGDATA/repmgr.conf
-
 
 # override this on secondary nodes
 ENV PRIMARY_NODE=localhost
 
 ENV PG_REP_USER=repmgr
 ENV PG_REP_DB=repmgr
+ENV PGPASSFILE="$PGDATA/.pgpass"
 
 
 RUN git clone https://github.com/mreithub/pg_recall.git /root/pg_recall/
