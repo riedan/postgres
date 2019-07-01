@@ -89,7 +89,6 @@ COPY postgresql.conf /usr/local/share/postgresql/postgresql.conf.repmgr
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY script/*.sh /docker-entrypoint-initdb.d/
 
-RUN chmod 644 /etc/repmgr.conf
 RUN dos2unix /usr/local/bin/docker-entrypoint.sh
 RUN dos2unix /docker-entrypoint-initdb.d/*.sh
 
