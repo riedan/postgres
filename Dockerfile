@@ -26,15 +26,17 @@ RUN set -ex; \
 ENV LANG C
 
 
-RUN set -ex \
-	\
-	&& apk add --no-cache --virtual .dd2 \
-	dos2unix postgresql-dev make git
 
 RUN set -ex \
 	\
 	&& apk add --no-cache  ca-certificates repmgr su-exec bash \
 	&& apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted barman
+
+RUN set -ex \
+	\
+	&& apk add --no-cache --virtual .dd2 \
+	dos2unix postgresql-dev make git
+
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 

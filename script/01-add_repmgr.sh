@@ -3,9 +3,8 @@
 set -e
 
 
-if ! [ -e $PGDATA/repmgr.conf ]; then
- cp /etc/repmgr.conf $PGDATA/repmgr.conf
-fi
+cp /etc/repmgr.conf $PGDATA/repmgr.conf
+
 
 chown  ${SYS_USER}:${SYS_GROUP} $PGDATA/repmgr.conf
 
