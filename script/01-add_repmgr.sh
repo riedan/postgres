@@ -11,7 +11,12 @@ wal_keep_segments = $PG_WAL_KEEP_SEGMENTS
 hot_standby = on
 EOF
 
-chown  ${SYS_USER}:${SYS_GROUP} $postgresHome/repmgr.conf
+
+if ! [ -e $POSTGRESHOME/repmgr.conf ]; then
+ cp /etc/repmgr.conf $POSTGRESHOME/repmgr.conf
+fi
+
+chown  ${SYS_USER}:${SYS_GROUP} $POSTGRESHOME/repmgr.conf
 
 if [ $(grep -c "replication repmgr" ${PGDATA}/pg_hba.conf) -gt 0 ]; then
     return
