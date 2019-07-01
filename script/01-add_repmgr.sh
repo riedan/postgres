@@ -12,7 +12,7 @@ if [ $(grep -c "replication repmgr" ${PGDATA}/pg_hba.conf) -gt 0 ]; then
     return
 fi
 
-echo '~~ 01: add repmgr' >&2
+echo "~~ 01: add repmgr" >&2
 
 if [ -z "$PG_REP_PASSWORD" ]; then
 	echo 'ERROR: Missing $PG_REP_PASSWORD variable' >&2
