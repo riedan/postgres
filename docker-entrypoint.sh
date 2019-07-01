@@ -183,12 +183,4 @@ if [ "$1" = 'postgres' ]; then
 	fi
 fi
 
-if [ "$1" = postgres ]; then
-	echo "~~ starting PostgreSQL+repmgr..." >&2
-	# TODO maybe we should use pg_ctl here (this way the user can pass commandline arguments to postgres though)
-	"$@" &
-	sleep 1
-	repmgrd --verbose
-else
-	exec "$@"
-fi
+exec "$@"
