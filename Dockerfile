@@ -40,10 +40,26 @@ RUN set -ex \
 RUN set -ex \
 	\
 	&& apk add --no-cache --virtual .dd2 \
-	dos2unix curl  make git gcc libxslt-dev \
-                     libxml2-dev \
-                     libedit-dev \
-                     libc-dev \
+	      dos2unix \
+	      curl \
+	      git \
+	      bison \
+        coreutils \
+        dpkg-dev dpkg \
+        flex \
+        gcc \
+    #		krb5-dev \
+        libc-dev \
+        libedit-dev \
+        libxml2-dev \
+        libxslt-dev \
+        linux-headers \
+        make \
+        openssl-dev \
+        perl-utils \
+        perl-ipc-run \
+        util-linux-dev \
+        zlib-dev \
   && curl -sSL https://github.com/2ndQuadrant/repmgr/archive/v${REPMGR_VERSION}.tar.gz  -o ${REPMGR_VERSION}.tar.gz \
   && echo "${REPMGR_SHA1}  ${REPMGR_VERSION}.tar.gz" | sha1sum -c - \
   && tar zxf ${REPMGR_VERSION}.tar.gz \
