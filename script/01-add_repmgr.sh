@@ -2,7 +2,7 @@
 
 set -e
 
-
+cp /usr/local/share/postgresql/postgresql.conf.repmgr $PGDATA/postgresql.conf
 cp /etc/repmgr.conf $PGDATA/repmgr.conf
 
 
