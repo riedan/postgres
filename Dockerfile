@@ -24,7 +24,7 @@ RUN set -ex; \
 # make the "C" locale so postgres will be utf-8 enabled by default
 # alpine doesn't require explicit locale-file generation
 ENV LANG C
-ENV POSTGRESHOME /var/lib/postgresql
+
 
 RUN set -ex \
 	\
@@ -38,7 +38,7 @@ RUN set -ex \
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
-RUN cp /etc/repmgr.conf $POSTGRESHOME/repmgr.conf && chown  ${SYS_USER}:${SYS_GROUP} $POSTGRESHOME/repmgr.conf
+RUN cp /etc/repmgr.conf $PGDATA/repmgr.conf && chown  ${SYS_USER}:${SYS_GROUP} $PGDATA/repmgr.conf
 
 
 # override this on secondary nodes

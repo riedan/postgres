@@ -3,11 +3,11 @@
 set -e
 
 
-if ! [ -e $POSTGRESHOME/repmgr.conf ]; then
- cp /etc/repmgr.conf $POSTGRESHOME/repmgr.conf
+if ! [ -e $PGDATA/repmgr.conf ]; then
+ cp /etc/repmgr.conf $PGDATA/repmgr.conf
 fi
 
-chown  ${SYS_USER}:${SYS_GROUP} $POSTGRESHOME/repmgr.conf
+chown  ${SYS_USER}:${SYS_GROUP} $PGDATA/repmgr.conf
 
 if [ $(grep -c "replication repmgr" ${PGDATA}/pg_hba.conf) -gt 0 ]; then
     return
