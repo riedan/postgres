@@ -40,6 +40,7 @@ RUN set -ex \
 RUN set -ex \
 	\
 	&& apk add --no-cache --virtual .dd2 \
+	      postgresql-dev \
 	      dos2unix \
 	      curl \
 	      git \
