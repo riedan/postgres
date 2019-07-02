@@ -6,6 +6,8 @@ PGHOST=${PRIMARY_NODE}
 
 installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" --dbname "$PG_REP_DB" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
 
+PGPASSFILE=${PGDATA}/.pgpass
+
 if [ "${installed}" != "1" ]; then
     echo '~~ 03: registering as primary' >&2
     repmgr -f $PGDATA/repmgr.conf primary register
