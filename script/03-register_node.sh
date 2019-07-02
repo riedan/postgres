@@ -10,7 +10,9 @@ PGPASSFILE=${PGDATA}/.pgpass
 
 if [ "${installed}" != "1" ]; then
     echo '~~ 03: registering as primary' >&2
+    export PGPASSWORD="${PGPASSWORD:-$PG_REP_PASSWORD}"
     repmgr -f $PGDATA/repmgr.conf primary register
+    export PGPASSWORD="${PGPASSWORD:-$POSTGRES_PASSWORD}"
     return
 fi
 
