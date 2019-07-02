@@ -31,4 +31,4 @@ if [ "${is_reg}" != "1" ] && [ ${my_node} -gt 1 ]; then
     pg_ctl -D "$PGDATA" start &
     sleep 1
     repmgr -f $PGDATA/repmgr.conf -h "$PRIMARY_NODE" -U "$PG_REP_USER" -d "$PG_REP_DB" standby register
-fiexit
+fi
