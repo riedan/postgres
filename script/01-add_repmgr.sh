@@ -29,4 +29,4 @@ sed -i "s/#*\(wal_keep_segments\).*/\1 = $PG_WAL_KEEP_SEGMENTS/;" ${PGDATA}/post
 pg_ctl -D ${PGDATA} stop -m fast
 pg_ctl -D ${PGDATA} start &
 
-sleep 1
+sleep 10
