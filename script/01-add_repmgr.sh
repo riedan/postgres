@@ -4,6 +4,7 @@ set -e
 
 cp /usr/local/share/postgresql/postgresql.conf.repmgr $PGDATA/postgresql.conf
 
+
 if ! [ -z ${PG_SSL} ]; then
 
   sed -i "s/#*\(ssl =\).*/\1 ${PG_SSL}/;" ${PGDATA}/postgresql.conf
@@ -19,8 +20,8 @@ if ! [ -z ${PG_SSL} ]; then
   if ! [ -z ${PG_SSL_CA_FILE} ]; then
     sed -i "s/#*\(ssl_ca_file\).*/\1 = '${PG_SSL_CA_FILE}'/;" ${PGDATA}/postgresql.conf
   fi
-fi
 
+fi
 
 
 if [ $(grep -c "replication repmgr" ${PGDATA}/pg_hba.conf) -gt 0 ]; then
@@ -40,6 +41,13 @@ createdb -U "$POSTGRES_USER" -O "$PG_REP_USER" "$PG_REP_DB"
 
 echo "host replication $PG_REP_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 echo "host all repmgr 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
+
+
+if ! [ -z ${PG_SSL} ]; then
+
+ sed -i "s/host/hostssl/;" ${PGDATA}/pg_hba.conf
+
+fi
 
 sed -i "s/#*\(shared_preload_libraries\).*/\1 = 'repmgr'/;" ${PGDATA}/postgresql.conf
 sed -i "s/#*\(max_wal_senders\).*/\1 = $PG_MAX_WAL_SENDERS/;" ${PGDATA}/postgresql.conf
