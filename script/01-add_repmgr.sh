@@ -11,17 +11,14 @@ if  [ -n "${PG_SSL}" ]; then
 
   sed -i "s/#*\(ssl =\).*/\1 ${PG_SSL}/;" ${PGDATA}/postgresql.conf
 
-  if  [ -n "${PG_SSL_KEY_FILE}" ]; then
-    sed -i "s/#*\(ssl_key_file\).*/\1 = '${PG_SSL_KEY_FILE}'/;" ${PGDATA}/postgresql.conf
-  fi
+  sed -i  "s/#*\(ssl_key_file\).*/\1 = \'$PG_SSL_KEY_FILE\'/;" ${PGDATA}/postgresql.conf
 
-  if  [ -n "${PG_SSL_CERT_FILE}" ]; then
-    sed -i "s/#*\(ssl_cert_file\).*/\1 = '${PG_SSL_CERT_FILE}'/;" ${PGDATA}/postgresql.conf
-  fi
 
-  if  [ -n "${PG_SSL_CA_FILE}" ]; then
-    sed -i "s/#*\(ssl_ca_file\).*/\1 = '${PG_SSL_CA_FILE}'/;" ${PGDATA}/postgresql.conf
-  fi
+  sed -i "s/#*\(ssl_cert_file\).*/\1 = \'$PG_SSL_CERT_FILE\'/;" ${PGDATA}/postgresql.conf
+
+
+  sed -i "s/#*\(ssl_ca_file\).*/\1 = \'$PG_SSL_CA_FILE\'/;" ${PGDATA}/postgresql.conf
+
 
 fi
 
