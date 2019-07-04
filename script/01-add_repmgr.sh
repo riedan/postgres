@@ -4,6 +4,25 @@ set -e
 
 cp /usr/local/share/postgresql/postgresql.conf.repmgr $PGDATA/postgresql.conf
 
+if ! [ -z ${PG_SSL} ]; then
+
+  sed -i "s/#*\(ssl =\).*/\1 ${PG_SSL}/;" ${PGDATA}/postgresql.conf
+
+  if ! [ -z ${PG_SSL_KEY_FILE} ]; then
+    sed -i "s/#*\(ssl_key_file\).*/\1 = '${PG_SSL_KEY_FILE}'/;" ${PGDATA}/postgresql.conf
+  fi
+
+  if ! [ -z ${PG_SSL_CERT_FILE} ]; then
+    sed -i "s/#*\(ssl_cert_file\).*/\1 = '${PG_SSL_CERT_FILE}'/;" ${PGDATA}/postgresql.conf
+  fi
+
+  if ! [ -z ${PG_SSL_CA_FILE} ]; then
+    sed -i "s/#*\(ssl_ca_file\).*/\1 = '${PG_SSL_CA_FILE}'/;" ${PGDATA}/postgresql.conf
+  fi
+fi
+
+
+
 if [ $(grep -c "replication repmgr" ${PGDATA}/pg_hba.conf) -gt 0 ]; then
     return
 fi
