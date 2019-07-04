@@ -11,14 +11,20 @@ if  [ -n "${PG_SSL}" ]; then
 
   if  [ -n "${PG_SSL_KEY_FILE}" ]; then
     cp ${PG_SSL_KEY_FILE} ${PGDATA}/server.key
+    chown  ${SYS_USER}:${SYS_GROUP}  ${PGDATA}/server.key
+    chmod 600  ${PGDATA}/server.key
   fi
 
   if  [ -n "${PG_SSL_CERT_FILE}" ]; then
     cp ${PG_SSL_CERT_FILE} ${PGDATA}/server.crt
+    chown  ${SYS_USER}:${SYS_GROUP}  ${PGDATA}/server.crt
+    chmod 600  ${PGDATA}/server.key
   fi
 
   if  [ -n "${PG_SSL_CA_FILE}" ]; then
     cp ${PG_SSL_CA_FILE} ${PGDATA}/root.crt
+    chown  ${SYS_USER}:${SYS_GROUP}  ${PGDATA}/root.crt
+    chmod 600  ${PGDATA}/server.key
   fi
 
 fi
