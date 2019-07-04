@@ -5,20 +5,21 @@ set -e
 cp /usr/local/share/postgresql/postgresql.conf.repmgr $PGDATA/postgresql.conf
 
 
-pg_ctl -D ${PGDATA} stop -m fast
-
 if  [ -n "${PG_SSL}" ]; then
 
   sed -i "s/#*\(ssl =\).*/\1 ${PG_SSL}/;" ${PGDATA}/postgresql.conf
 
-  sed -i  "s/#*\(ssl_key_file\).*/\1 = \'$PG_SSL_KEY_FILE\'/;" ${PGDATA}/postgresql.conf
+  if  [ -n "${PG_SSL_KEY_FILE}" ]; then
+    cp ${PG_SSL_KEY_FILE} ${PGDATA}/server.key
+  fi
 
+  if  [ -n "${PG_SSL_CERT_FILE}" ]; then
+    cp ${PG_SSL_CERT_FILE} ${PGDATA}/server.crt
+  fi
 
-  sed -i "s/#*\(ssl_cert_file\).*/\1 = \'$PG_SSL_CERT_FILE\'/;" ${PGDATA}/postgresql.conf
-
-
-  sed -i "s/#*\(ssl_ca_file\).*/\1 = \'$PG_SSL_CA_FILE\'/;" ${PGDATA}/postgresql.conf
-
+  if  [ -n "${PG_SSL_CA_FILE}" ]; then
+    cp ${PG_SSL_CA_FILE} ${PGDATA}/root.crt
+  fi
 
 fi
 
@@ -52,7 +53,7 @@ sed -i "s/#*\(shared_preload_libraries\).*/\1 = 'repmgr'/;" ${PGDATA}/postgresql
 sed -i "s/#*\(max_wal_senders\).*/\1 = $PG_MAX_WAL_SENDERS/;" ${PGDATA}/postgresql.conf
 sed -i "s/#*\(wal_keep_segments\).*/\1 = $PG_WAL_KEEP_SEGMENTS/;" ${PGDATA}/postgresql.conf
 
-
+pg_ctl -D ${PGDATA} stop -m fast
 pg_ctl -D ${PGDATA} start &
 
 sleep 10
