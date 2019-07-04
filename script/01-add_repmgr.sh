@@ -5,6 +5,8 @@ set -e
 cp /usr/local/share/postgresql/postgresql.conf.repmgr $PGDATA/postgresql.conf
 
 
+pg_ctl -D ${PGDATA} stop -m fast
+
 if  [ -n "${PG_SSL}" ]; then
 
   sed -i "s/#*\(ssl =\).*/\1 ${PG_SSL}/;" ${PGDATA}/postgresql.conf
@@ -53,7 +55,7 @@ sed -i "s/#*\(shared_preload_libraries\).*/\1 = 'repmgr'/;" ${PGDATA}/postgresql
 sed -i "s/#*\(max_wal_senders\).*/\1 = $PG_MAX_WAL_SENDERS/;" ${PGDATA}/postgresql.conf
 sed -i "s/#*\(wal_keep_segments\).*/\1 = $PG_WAL_KEEP_SEGMENTS/;" ${PGDATA}/postgresql.conf
 
-pg_ctl -D ${PGDATA} stop -m fast
+
 pg_ctl -D ${PGDATA} start &
 
 sleep 10
