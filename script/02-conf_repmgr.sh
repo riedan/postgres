@@ -16,11 +16,11 @@ if ! [ -e $PGPASSFILE ]; then
 	PGPASSFILE=${PGDATA}/.pgpass
 fi
 
-installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" "$PG_REP_DB" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
+installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
 my_node=1
 
 if [ "${installed}" == "1" ]; then
-    my_node=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" "$PG_REP_DB" -c 'SELECT max(node_id)+1 FROM repmgr.nodes')
+    my_node=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" "$PG_REP_DB" -p "$PG_PORT" -c 'SELECT max(node_id)+1 FROM repmgr.nodes')
 fi
 
 # allow the user to specify the hostname/IP for this node
@@ -31,7 +31,7 @@ fi
 cat<<EOF > "$PGDATA/repmgr.conf"
 node_id=${my_node}
 node_name=$(hostname -s | sed 's/\W\{1,\}/_/g;')
-conninfo=host='$NODE_HOST' user='$PG_REP_USER' dbname='$PG_REP_DB' connect_timeout=5
+conninfo=host='$NODE_HOST' user='$PG_REP_USER' dbname='$PG_REP_DB' port=$PG_PORT connect_timeout=5 sslmode=prefer
 data_directory=${PGDATA}
 
 log_level=INFO

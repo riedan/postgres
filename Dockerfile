@@ -79,6 +79,8 @@ ENV PRIMARY_NODE=localhost
 ENV PG_REP_USER=repmgr
 ENV PG_REP_DB=repmgr
 ENV PGPASSFILE="$PGDATA/.pgpass"
+ENV POSTGRES_PORT=5432
+
 
 
 RUN git clone https://github.com/mreithub/pg_recall.git /root/pg_recall/
