@@ -3,7 +3,7 @@
 set -ex
 
 PGHOST=${PRIMARY_NODE}
-
+PGSSLMODE=prefer
 installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" --dbname "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
 unset  PGPASSWORD
 

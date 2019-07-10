@@ -8,7 +8,7 @@ fi
 
 
 echo '~~ 02: repmgr conf' >&2
-
+PGSSLMODE=prefer
 unset  PGPASSWORD
 
 PGHOST=${PRIMARY_NODE}
