@@ -78,10 +78,11 @@ ENV PRIMARY_NODE=localhost
 
 ENV PG_REP_USER=repmgr
 ENV PG_REP_DB=repmgr
-ENV PGPASSFILE="$PGDATA/.pgpass"
+ENV PG_CONFIG_DIR=/var/lib/postgresql/conf
+ENV PGPASSFILE="$PG_CONFIG_DIR/.pgpass"
 ENV POSTGRES_PORT=5432
 ENV PGSSLMODE=prefer
-ENV PG_CONFIG_DIR=/var/lib/postgresql/conf
+
 
 
 RUN mkdir -p "$PG_CONFIG_DIR" &&  chown -R ${SYS_USER}:${SYS_GROUP} "$PG_CONFIG_DIR"
