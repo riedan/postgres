@@ -37,8 +37,11 @@ fi
 # allow the container to be started with `--user`
 if [ "$1" = 'postgres' ] && [ "$(id -u)" = '0' ]; then
 	mkdir -p "$PGDATA"
+	mkdir -p "$PG_CONFIG_DIR"
 	chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
+	chown -R ${SYS_USER}:${SYS_GROUP} "$PG_CONFIG_DIR"
 	chmod 700 "$PGDATA"
+  chmod 700 "$PG_CONFIG_DIR"
 
 	mkdir -p /var/run/postgresql
 	chown -R ${SYS_USER}:${SYS_GROUP} /var/run/postgresql
@@ -58,9 +61,11 @@ if [ "$1" = 'postgres' ]; then
   #create sys_group user and sys_group if not exist
 
 	mkdir -p "$PGDATA"
+	mkdir -p "$PG_CONFIG_DIR"
+	chown -R ${SYS_USER}:${SYS_GROUP} "$PG_CONFIG_DIR"  2>/dev/null || :
 	chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA" 2>/dev/null || :
 	chmod 700 "$PGDATA" 2>/dev/null || :
-	chmod 700 "$PGDATA" 2>/dev/null || :
+	chmod 700 "$PG_CONFIG_DIR" 2>/dev/null || :
 
 	# look specifically for PG_VERSION, as it is expected in the DB dir
 	if [ ! -s "$PGDATA/PG_VERSION" ]; then
