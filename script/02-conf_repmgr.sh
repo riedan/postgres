@@ -9,21 +9,21 @@ fi
 
 echo '~~ 02: repmgr conf' >&2
 
- unset  PGPASSWORD
+unset  PGPASSWORD
 
 PGHOST=${PRIMARY_NODE}
 
-if ! [ -e $PGPASSFILE ]; then
+if ! [ -f $PGPASSFILE ]; then
 	echo "*:5432:*:$PG_REP_USER:$PG_REP_PASSWORD" > ${PGDATA}/.pgpass
 	chmod go-rwx ${PGDATA}/.pgpass
 	PGPASSFILE=${PGDATA}/.pgpass
 fi
 
-installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
+installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -w -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
 my_node=1
 
 if [ "${installed}" == "1" ]; then
-    my_node=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" "$PG_REP_DB" -p "$PG_PORT" -c 'SELECT max(node_id)+1 FROM repmgr.nodes')
+    my_node=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -w -c 'SELECT max(node_id)+1 FROM repmgr.nodes')
 fi
 
 # allow the user to specify the hostname/IP for this node

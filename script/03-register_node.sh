@@ -5,10 +5,7 @@ set -ex
 PGHOST=${PRIMARY_NODE}
 
 installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" --dbname "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
-
-PGPASSFILE=${PGDATA}/.pgpass
-
- unset  PGPASSWORD
+unset  PGPASSWORD
 
 if [ "${installed}" != "1" ]; then
     echo '~~ 03: registering as primary' >&2
@@ -25,7 +22,7 @@ if [ -n "$WITNESS" ]; then
 fi
 
 my_node=$(grep node_id $PGDATA/repmgr.conf | cut -d= -f 2)
-is_reg=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" "$PG_REP_DB" -p "$PG_PORT"  -c "SELECT 1 FROM repmgr.nodes WHERE node_id=${my_node}")
+is_reg=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM repmgr.nodes WHERE node_id=${my_node}")
 
 if [ "${is_reg}" != "1" ] && [ ${my_node} -gt 1 ]; then
     echo '~~ 03: registering as standby' >&2
