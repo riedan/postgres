@@ -14,10 +14,10 @@ unset  PGPASSWORD
 PGHOST=${PRIMARY_NODE}
 
 if ! [ -f $PGPASSFILE ]; then
-	echo "*:5432:*:$PG_REP_USER:$PG_REP_PASSWORD" > ${PGDATA}/.pgpass
-	echo "*:$PG_PORT:*:$PG_REP_USER:$PG_REP_PASSWORD" >> ${PGDATA}/.pgpass
-	chmod go-rwx ${PGDATA}/.pgpass
-	PGPASSFILE=${PGDATA}/.pgpass
+	echo "*:5432:*:$PG_REP_USER:$PG_REP_PASSWORD" > ${PG_CONFIG_DIR}/.pgpass
+	echo "*:$PG_PORT:*:$PG_REP_USER:$PG_REP_PASSWORD" >> ${PG_CONFIG_DIR}/.pgpass
+	chmod go-rwx ${PG_CONFIG_DIR}/.pgpass
+	PGPASSFILE=${PG_CONFIG_DIR}/.pgpass
 fi
 
 installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
@@ -32,7 +32,7 @@ if [ -z "$NODE_HOST" ]; then
 	NODE_HOST=$(hostname -f)
 fi
 
-cat<<EOF > "$PGDATA/repmgr.conf"
+cat<<EOF > "$PG_CONFIG_DIR/repmgr.conf"
 node_id=${my_node}
 node_name=$(hostname -s | sed 's/\W\{1,\}/_/g;')
 conninfo=host='$NODE_HOST' user='$PG_REP_USER' dbname='$PG_REP_DB' port=$PG_PORT connect_timeout=5 sslmode=prefer
@@ -56,4 +56,4 @@ service_reload_command=pg_ctl -D ${PGDATA} reload
 EOF
 
 
-chown  ${SYS_USER}:${SYS_GROUP} $PGDATA/repmgr.conf
+chown  ${SYS_USER}:${SYS_GROUP} ${PG_CONFIG_DIR}/repmgr.conf

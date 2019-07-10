@@ -81,8 +81,10 @@ ENV PG_REP_DB=repmgr
 ENV PGPASSFILE="$PGDATA/.pgpass"
 ENV POSTGRES_PORT=5432
 ENV PGSSLMODE=prefer
+ENV PG_CONFIG_DIR=/var/lib/postgresql/conf
 
 
+RUN mkdir -p "$PG_CONFIG_DIR" &&  chown -R ${SYS_USER}:${SYS_GROUP} "$PG_CONFIG_DIR"
 
 RUN git clone https://github.com/mreithub/pg_recall.git /root/pg_recall/
 RUN cd /root/pg_recall/; make install
