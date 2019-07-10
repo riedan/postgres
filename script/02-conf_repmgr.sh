@@ -15,6 +15,7 @@ PGHOST=${PRIMARY_NODE}
 
 if ! [ -f $PGPASSFILE ]; then
 	echo "*:5432:*:$PG_REP_USER:$PG_REP_PASSWORD" > ${PGDATA}/.pgpass
+	echo "*:$PG_PORT:*:$PG_REP_USER:$PG_REP_PASSWORD" >> ${PGDATA}/.pgpass
 	chmod go-rwx ${PGDATA}/.pgpass
 	PGPASSFILE=${PGDATA}/.pgpass
 fi
