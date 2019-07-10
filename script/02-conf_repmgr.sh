@@ -6,7 +6,10 @@ if [ -s $PGDATA/repmgr.conf ]; then
     return
 fi
 
+
 echo '~~ 02: repmgr conf' >&2
+
+ unset  PGPASSWORD
 
 PGHOST=${PRIMARY_NODE}
 
