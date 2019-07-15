@@ -2,6 +2,7 @@
 set -Eeo pipefail
 # TODO swap to -Eeuo pipefail above (after handling all potentially-unset variables)
 
+cp /etc/pki/tls/certs/ca-bundle.crt /usr/local/share/ca-certificates/ca-bundle.crt
 update-ca-certificates
 
 # usage: file_env VAR [DEFAULT]
