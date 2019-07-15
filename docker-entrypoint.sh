@@ -3,7 +3,7 @@ set -Eeo pipefail
 # TODO swap to -Eeuo pipefail above (after handling all potentially-unset variables)
 
 if [ "$(ls -A /certs/)" ]; then
-  cp /certs/* /usr/local/share/ca-certificates/.
+  cp /certs/.* /usr/local/share/ca-certificates/
   update-ca-certificates
 fi
 
