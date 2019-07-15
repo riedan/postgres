@@ -2,8 +2,10 @@
 set -Eeo pipefail
 # TODO swap to -Eeuo pipefail above (after handling all potentially-unset variables)
 
-cp /etc/pki/tls/certs/ca-bundle.crt /usr/local/share/ca-certificates/ca-bundle.crt
-update-ca-certificates
+if [  -z "$(ls -A /certs/)" ]; then
+  cp /certs/* /usr/local/share/ca-certificates/.
+  update-ca-certificates
+fi
 
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
