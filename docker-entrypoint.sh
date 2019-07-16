@@ -2,12 +2,6 @@
 set -Eeo pipefail
 # TODO swap to -Eeuo pipefail above (after handling all potentially-unset variables)
 
-if [ "$(ls -A /certs/)" ]; then
-  cp -u /certs/* /usr/local/share/ca-certificates/
-  chmod 644 /usr/local/share/ca-certificates/*
-  update-ca-certificates
-fi
-
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
 # (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
@@ -34,6 +28,12 @@ file_env() {
 if [ ${SYS_USER} != "postgres" ]; then
     getent group ${SYS_GROUP} || addgroup -S ${SYS_GROUP}
     getent passwd ${SYS_USER} || adduser -S ${SYS_USER}  -G ${SYS_GROUP} -s "/bin/bash" -h "${PGDATA}"
+fi
+
+
+if [ "$(ls -A /certs/)" ]; then
+  cp -u /certs/* /usr/local/share/ca-certificates/
+  update-ca-certificates
 fi
 
 if [ "${1:0:1}" = '-' ]; then
