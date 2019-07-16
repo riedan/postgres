@@ -102,11 +102,15 @@ RUN dos2unix /docker-entrypoint-initdb.d/*.sh
 RUN apk del .dd2
 RUN apk add --update iputils
 
+USER    root
+
 RUN chmod +x  /usr/local/bin/docker-entrypoint.sh  /docker-entrypoint-initdb.d/*.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 VOLUME /var/lib/postgresql
 VOLUME /var/lib/postgresql/data
+
+
 
 EXPOSE 5432
 CMD ["postgres"]
