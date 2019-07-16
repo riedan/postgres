@@ -68,7 +68,8 @@ RUN set -ex \
   && ./configure \
   && make USE_PGXS=1 install \
   && cd .. \
-  && rm -Rf repmgr-${REPMGR_VERSION} ${REPMGR_VERSION}.tar.gz
+  && rm -Rf repmgr-${REPMGR_VERSION} ${REPMGR_VERSION}.tar.gz \
+  && update-ca-certificates
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
