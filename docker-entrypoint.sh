@@ -30,12 +30,6 @@ if [ ${SYS_USER} != "postgres" ]; then
     getent passwd ${SYS_USER} || adduser -S ${SYS_USER}  -G ${SYS_GROUP} -s "/bin/bash" -h "${PGDATA}"
 fi
 
-
-if [ "$(ls -A /certs/)" ]; then
-  cp -u /certs/* /usr/local/share/ca-certificates/
-  update-ca-certificates
-fi
-
 if [ "${1:0:1}" = '-' ]; then
 	set -- postgres "$@"
 fi
