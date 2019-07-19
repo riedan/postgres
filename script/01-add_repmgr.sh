@@ -8,6 +8,9 @@ cp /usr/local/share/postgresql/postgresql.conf.repmgr $PGDATA/postgresql.conf
 if  [ -n "${PG_SSL}" ]; then
 
   sed -i "s/#*\(ssl =\).*/\1 ${PG_SSL}/;" ${PGDATA}/postgresql.conf
+  sed -i "s/#*\(ssl_cert_file =\).*/\1$ ${PG_SSL_CERT_FILE}/;" ${PGDATA}/postgresql.conf
+  sed -i "s/#*\(ssl_key_file =\).*/\1 ${PG_SSL_KEY_FILE}/;" ${PGDATA}/postgresql.conf
+  sed -i "s/#*\(ssl_ca_file =\).*/\1 ${PG_SSL_CA_FILE}/;" ${PGDATA}/postgresql.conf
 
   if  [ -n "${PG_SSL_KEY_FILE}" ]; then
     cp ${PG_SSL_KEY_FILE} ${PGDATA}/server.key
@@ -49,7 +52,7 @@ echo "host replication $PG_REP_USER 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 echo "host all repmgr 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 
 
-if ! [ -z ${PG_SSL} ]; then
+if  [ ${PG_SSL} = "on" ]; then
 
  sed -i "s/host/hostssl/;" ${PGDATA}/pg_hba.conf
 

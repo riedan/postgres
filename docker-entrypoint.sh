@@ -188,4 +188,7 @@ if [ "$1" = 'postgres' ]; then
 	fi
 fi
 
+repmgrd -vvv --pid-file="$REPMGR_PID_FILE" -f ${PG_CONFIG_DIR}/repmgr.conf
+
+
 exec "$@"
