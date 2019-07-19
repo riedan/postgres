@@ -25,6 +25,8 @@ file_env() {
 }
 
 
+rm -rf $REPMGR_PID_FILE
+
 if [ ${SYS_USER} != "postgres" ]; then
     getent group ${SYS_GROUP} || addgroup -S ${SYS_GROUP}
     getent passwd ${SYS_USER} || adduser -S ${SYS_USER}  -G ${SYS_GROUP} -s "/bin/bash" -h "${PGDATA}"
