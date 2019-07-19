@@ -11,7 +11,7 @@ if  [ -n "${PG_SSL}" ]; then
 
 
   if  [ -n "${PG_SSL_KEY_FILE}" ]; then
-    cp ${PG_SSL_KEY_FILE}${PG_CONFIG_DIR}/server.key
+    cp ${PG_SSL_KEY_FILE} ${PG_CONFIG_DIR}/server.key
     chown  ${SYS_USER}:${SYS_GROUP}  ${PG_CONFIG_DIR}/server.key
     chmod 600  ${PGDATA}/server.key
   fi
@@ -28,7 +28,7 @@ if  [ -n "${PG_SSL}" ]; then
     chmod 600  ${PGDATA}/server.key
   fi
 
-  sed -i "s@#*.*\(ssl_cert_file =\).*@\1 \'${PGDATA}/server.crt\'@;" ${PGDATA}/postgresql.conf
+  sed -i "s@#*.*\(ssl_cert_file =\).*@\1 \'${PG_CONFIG_DIR}/server.crt\'@;" ${PGDATA}/postgresql.conf
   sed -i "s@#*.*\(ssl_key_file =\).*@\1 \'${PG_CONFIG_DIR}/server.key\'@;" ${PGDATA}/postgresql.conf
   sed -i "s@#*.*\(ssl_ca_file =\).*@\1 \'${PG_CONFIG_DIR}/root.crt\'@;" ${PGDATA}/postgresql.conf
 
