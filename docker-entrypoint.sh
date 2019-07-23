@@ -190,7 +190,7 @@ if [ "$1" = 'postgres' ]; then
 	fi
 fi
 
-(sleep 10 ; repmgrd -vvv --pid-file="$REPMGR_PID_FILE" -f ${PG_CONFIG_DIR}/repmgr.conf &)
+(sleep 10 ; repmgrd -vvv --pid-file="$REPMGR_PID_FILE" -f ${PG_CONFIG_DIR}/repmgr.conf ) &
 
 
 exec "$@"
