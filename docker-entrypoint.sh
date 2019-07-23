@@ -187,7 +187,20 @@ if [ "$1" = 'postgres' ]; then
 		echo
 		echo 'PostgreSQL init process complete; ready for start up.'
 		echo
+	else
+
+    my_node=$(grep node_id ${PG_CONFIG_DIR}/repmgr.conf | cut -d= -f 2)
+    is_active=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -c "SELECT active FROM repmgr.nodes WHERE node_id=${my_node}")
+
+    if [ "${is_active}" != "true" ] ; then
+        echo 'rejoin cluster' >&2
+        pg_ctl -D "$PGDATA" stop -m fast
+        repmgr -f ${PG_CONFIG_DIR}/repmgr.conf node rejoin -h "$PRIMARY_NODE" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" --force-rewind
+        pg_ctl -D "$PGDATA" start &
+    fi
+
 	fi
+
 fi
 
 (sleep 10 ; repmgrd -vvv --pid-file="$REPMGR_PID_FILE" -f ${PG_CONFIG_DIR}/repmgr.conf ) &
