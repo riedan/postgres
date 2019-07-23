@@ -9,14 +9,14 @@ installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" --dbname "$PG_REP_DB" -p "$
 
 if [ "${installed}" != "1" ]; then
     echo '~~ 03: registering as primary' >&2
-    repmgr -f ${PG_CONFIG_DIR}/repmgr.conf primary register
+    repmgr -f ${PG_CONFIG_DIR}/repmgr.conf primary register -k 30
     export PGPASSWORD="${PGPASSWORD:-$POSTGRES_PASSWORD}"
     return
 fi
 
 if [ -n "$WITNESS" ]; then
 	echo '~~ 03: registering as witness server' >&2
-  repmgr -f ${PG_CONFIG_DIR}/repmgr.conf -h "$PRIMARY_NODE" -U "$PG_REP_USER" -d "$REPMGR_DB" -p "$PG_PORT" witness register
+  repmgr -f ${PG_CONFIG_DIR}/repmgr.conf -h "$PRIMARY_NODE" -U "$PG_REP_USER" -d "$REPMGR_DB" -p "$PG_PORT" witness register -k 30
   export PGPASSWORD="${PGPASSWORD:-$POSTGRES_PASSWORD}"
 	return
 fi
@@ -31,7 +31,7 @@ if [ "${is_reg}" != "1" ] && [ ${my_node} -gt 1 ]; then
     repmgr -f ${PG_CONFIG_DIR}/repmgr.conf -h "$PRIMARY_NODE" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" standby clone --fast-checkpoint
     pg_ctl -D "$PGDATA" start &
     sleep 1
-    repmgr -f ${PG_CONFIG_DIR}/repmgr.conf -h "$PRIMARY_NODE" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" standby register
+    repmgr -f ${PG_CONFIG_DIR}/repmgr.conf -h "$PRIMARY_NODE" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" standby register -k 30
 fi
 
 export PGPASSWORD="${PGPASSWORD:-$POSTGRES_PASSWORD}"
