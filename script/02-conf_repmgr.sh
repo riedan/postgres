@@ -21,7 +21,7 @@ if ! [ -f $PGPASSFILE ]; then
 fi
 
 if [ "$PGHOST" == "localhost" ]; then
-  PGPORT
+  PGPORT=5432
 else
   PGPORT=$PG_PORT
 fi
