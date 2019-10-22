@@ -4,7 +4,14 @@ set -ex
 unset  PGPASSWORD
 PGHOST=${PRIMARY_NODE}
 PGSSLMODE=prefer
-installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" --dbname "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'" || psql -qAt -h "$PGHOST" -U "$PG_REP_USER" --dbname "$PG_REP_DB"  -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
+
+if [ "$PGHOST" = "localhost" ]; then
+  PGPORT=5432
+else
+  PGPORT=$PG_PORT
+fi
+
+installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" --dbname "$PG_REP_DB" -p "$PGPORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'" )
 
 
 if [ "${installed}" != "1" ]; then
@@ -22,7 +29,7 @@ if [ -n "$WITNESS" ]; then
 fi
 
 my_node=$(grep node_id ${PG_CONFIG_DIR}/repmgr.conf | cut -d= -f 2)
-is_reg=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM repmgr.nodes WHERE node_id=${my_node}" || psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -c "SELECT 1 FROM repmgr.nodes WHERE node_id=${my_node}")
+is_reg=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PGPORT" -c "SELECT 1 FROM repmgr.nodes WHERE node_id=${my_node}" )
 
 if [ "${is_reg}" != "1" ] && [ ${my_node} -gt 1 ]; then
     echo '~~ 03: registering as standby' >&2
