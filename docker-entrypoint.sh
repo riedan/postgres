@@ -32,6 +32,41 @@ if [ ${SYS_USER} != "postgres" ]; then
     getent passwd ${SYS_USER} || adduser -S ${SYS_USER}  -G ${SYS_GROUP} -s "/bin/bash" -h "${PGDATA}"
 fi
 
+if [ ! -f $PGDATA/postgresql.conf ]; then
+
+  cp /usr/local/share/postgresql/postgresql.conf.repmgr $PGDATA/postgresql.conf
+
+  if  [ -n "${PG_SSL}" ]; then
+
+    sed -i "s@#*.*\(ssl =\).*@\1 ${PG_SSL}@;" ${PGDATA}/postgresql.conf
+
+
+    if  [ -n "${PG_SSL_KEY_FILE}" ]; then
+      cp ${PG_SSL_KEY_FILE} ${PG_CONFIG_DIR}/server.key
+      chown  ${SYS_USER}:${SYS_GROUP}  ${PG_CONFIG_DIR}/server.key
+      chmod 600  ${PG_CONFIG_DIR}/server.key
+    fi
+
+    if  [ -n "${PG_SSL_CERT_FILE}" ]; then
+      cp ${PG_SSL_CERT_FILE} ${PG_CONFIG_DIR}/server.crt
+      chown  ${SYS_USER}:${SYS_GROUP}  ${PG_CONFIG_DIR}/server.crt
+      chmod 600  ${PG_CONFIG_DIR}/server.key
+    fi
+
+    if  [ -n "${PG_SSL_CA_FILE}" ]; then
+      cp ${PG_SSL_CA_FILE} ${PG_CONFIG_DIR}/root.crt
+      chown  ${SYS_USER}:${SYS_GROUP}  ${PG_CONFIG_DIR}/root.crt
+      chmod 600  ${PG_CONFIG_DIR}/server.key
+    fi
+
+    sed -i "s@#*.*\(ssl_cert_file =\).*@\1 \'${PG_CONFIG_DIR}/server.crt\'@;" ${PGDATA}/postgresql.conf
+    sed -i "s@#*.*\(ssl_key_file =\).*@\1 \'${PG_CONFIG_DIR}/server.key\'@;" ${PGDATA}/postgresql.conf
+    sed -i "s@#*.*\(ssl_ca_file =\).*@\1 \'${PG_CONFIG_DIR}/root.crt\'@;" ${PGDATA}/postgresql.conf
+
+  fi
+fi
+
+
 if [ "${1:0:1}" = '-' ]; then
 	set -- postgres "$@"
 fi

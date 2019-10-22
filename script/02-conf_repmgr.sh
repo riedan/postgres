@@ -20,7 +20,7 @@ if ! [ -f $PGPASSFILE ]; then
 	PGPASSFILE=${PG_CONFIG_DIR}/.pgpass
 fi
 
-if [ "$PGHOST" == "localhost" ]; then
+if [ "$PGHOST" = "localhost" ]; then
   PGPORT=5432
 else
   PGPORT=$PG_PORT
