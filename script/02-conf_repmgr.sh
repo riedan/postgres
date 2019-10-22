@@ -26,11 +26,11 @@ else
   PGPORT=$PG_PORT
 fi
 
-installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'" || psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
+installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PGPORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'" || psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
 my_node=1
 
 if [ "${installed}" == "1" ]; then
-    my_node=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -c 'SELECT max(node_id)+1 FROM repmgr.nodes' || psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB"  -c 'SELECT max(node_id)+1 FROM repmgr.nodes')
+    my_node=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PGPORT" -c 'SELECT max(node_id)+1 FROM repmgr.nodes' || psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB"  -c 'SELECT max(node_id)+1 FROM repmgr.nodes')
 fi
 
 # allow the user to specify the hostname/IP for this node
