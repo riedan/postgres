@@ -20,12 +20,10 @@ if ! [ -f $PGPASSFILE ]; then
 	PGPASSFILE=${PG_CONFIG_DIR}/.pgpass
 fi
 
-if [ -n "$PGHOST" ]; then
-
-PGPORT=$PG_PORT
-
+if [ "$PGHOST" == "localhost" ]; then
+  PGPORT
 else
-PGPORT
+  PGPORT=$PG_PORT
 fi
 
 installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PG_PORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'" || psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'")
