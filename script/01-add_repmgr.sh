@@ -57,7 +57,7 @@ echo "host all repmgr 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
 if  [ ${PG_SSL} = "on" ]; then
 
  sed -i "s/host/hostssl/;" ${PGDATA}/pg_hba.conf
-
+ echo "host    all             all             127.0.0.1/32            trust" >> "$PGDATA/pg_hba.conf"
 fi
 
 sed -i "s/#*\(shared_preload_libraries\).*/\1 = 'repmgr'/;" ${PGDATA}/postgresql.conf
