@@ -23,7 +23,7 @@ fi
 if [ "$PGHOST" = "localhost" ]; then
   PGPORT=5432
 else
-  PGPORT=$PG_PORT
+  PGPORT=$PRIMARY_NODE_PORT
 fi
 
 installed=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PGPORT" -c "SELECT 1 FROM pg_tables WHERE tablename='nodes'" )
