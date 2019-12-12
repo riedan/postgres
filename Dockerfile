@@ -35,8 +35,10 @@ ENV LANG C
 
 RUN set -ex \
 	\
-	&& apk add --no-cache  ca-certificates su-exec bash \
-	&& apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted barman
+	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2
+
+RUN set -eux; \
+ pip3 install barman
 
 RUN set -ex \
 	\
