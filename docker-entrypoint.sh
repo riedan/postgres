@@ -198,7 +198,7 @@ if [ "$1" = 'postgres' ]; then
 
       if [ "${is_active}" != "true" ] && [ ${my_node} -gt 1 ]; then
           echo 'rejoin cluster' >&2
-          repmgr -f ${PG_CONFIG_DIR}/repmgr.conf -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PRIMARY_NODE_PORT" standby register -k 30 -F || true
+         # repmgr -f ${PG_CONFIG_DIR}/repmgr.conf -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PRIMARY_NODE_PORT" standby register -k 30 -F || true
       fi
     fi
 	fi

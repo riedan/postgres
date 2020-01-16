@@ -35,44 +35,15 @@ ENV LANG C
 
 RUN set -ex \
 	\
-	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2
+	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2 \
+	&& mkdir
 
 RUN set -eux; \
- pip3 install barman
-
-RUN set -ex \
-	\
-	&& apk add --no-cache --virtual .dd2 \
-	      postgresql-dev \
-	      dos2unix \
-	      curl \
-	      git \
-	      bison \
-        coreutils \
-        dpkg-dev dpkg \
-        flex \
-        gcc \
-    #		krb5-dev \
-        libc-dev \
-        libedit-dev \
-        libxml2-dev \
-        libxslt-dev \
-        linux-headers \
-        make \
-        openssl-dev \
-        perl-utils \
-        perl-ipc-run \
-        util-linux-dev \
-        zlib-dev \
-  && curl -sSL https://github.com/2ndQuadrant/repmgr/archive/v${REPMGR_VERSION}.tar.gz  -o ${REPMGR_VERSION}.tar.gz \
-  && echo "${REPMGR_SHA1}  ${REPMGR_VERSION}.tar.gz" | sha1sum -c - \
-  && tar zxf ${REPMGR_VERSION}.tar.gz \
-  && cd repmgr-${REPMGR_VERSION} \
-  && ./configure \
-  && make USE_PGXS=1 install \
-  && cd .. \
-  && rm -Rf repmgr-${REPMGR_VERSION} ${REPMGR_VERSION}.tar.gz \
-  && update-ca-certificates
+ pip3 install --upgrade pip3 && \
+ pip3 install --upgrade setuptools && \
+ pip3 install patroni && \
+ pip3 install psycopg2 pyyaml && \
+ update-ca-certificates
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
@@ -97,7 +68,8 @@ RUN cd /root/pg_recall/; make install
 
 COPY postgresql.conf /usr/local/share/postgresql/postgresql.conf.repmgr
 COPY docker-entrypoint.sh /usr/local/bin/
-COPY script/*.sh /docker-entrypoint-initdb.d/
+COPY script/* /docker-entrypoint-initdb.d/
+COPY template/* /usr/local/share/postgresql/
 
 RUN dos2unix /usr/local/bin/docker-entrypoint.sh
 RUN dos2unix /docker-entrypoint-initdb.d/*.sh
