@@ -68,4 +68,4 @@ EOF
 
 chown  ${SYS_USER}:${SYS_GROUP} ${PG_CONFIG_DIR}/repmgr.conf
 
-python 04-patroni.py
+python3 04-patroni.py
