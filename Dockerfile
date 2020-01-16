@@ -38,7 +38,7 @@ RUN set -ex \
 	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2
 
 RUN set -eux; \
- pip3 install --upgrade pip3 && \
+ pip3 install --upgrade pip && \
  pip3 install --upgrade setuptools && \
  pip3 install patroni && \
  pip3 install psycopg2 pyyaml && \
