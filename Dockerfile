@@ -79,7 +79,7 @@ RUN set -eux; \
  pip3 install --upgrade pip && \
  pip3 install --upgrade setuptools && \
  pip3 install psycopg2 pyyaml && \
- pip3 install patroni[etcd,aws,consul,zookeeper]&& \
+ pip3 install patroni[etcd,aws,consul,zookeeper] python-consul dnspython boto mock requests six kazoo click tzlocal prettytable && \
  update-ca-certificates
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
