@@ -9,9 +9,8 @@ from entrypoint_helpers import env, gen_cfg, gen_container_id, str2bool, start_a
 
 RUN_USER = env['sys_user']
 RUN_GROUP = env['sys_group']
-JIRA_SESSION_TIMEOUT = env.get('atl_session_timeout', 600)
-
-gen_container_id()
+PG_DATA = env['pgdata']
+PG_CONFIG_DIR = env['pg_config_dir']
 
 gen_cfg('patroni.yml.j2', f'{PG_CONFIG_DIR}/patroni.yml')
 

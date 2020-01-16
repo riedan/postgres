@@ -25,7 +25,7 @@ env = {k.lower(): v
 
 # Setup Jinja2 for templating
 jenv = j2.Environment(
-    loader=j2.FileSystemLoader('/opt/postgresql/etc/'),
+    loader=j2.FileSystemLoader('/usr/local/share/postgresql/'),
     autoescape=j2.select_autoescape(['xml']))
 
 
@@ -120,14 +120,14 @@ def activate_ssl(web_path, path_keystore, password_keystore, path_key, path_crt,
 
 def start_app(start_cmd, home_dir, name='app'):
     if os.getuid() == 0:
-        if str2bool(env.get('set_permissions') or True) and check_perms(home_dir, env['run_uid'], env['run_gid'], 0o700) is False:
-            set_perms(home_dir, env['run_user'], env['run_group'], 0o700)
-            logging.info(f"User is currently root. Will change directory ownership and downgrade run user to to {env['run_user']}")
+        if str2bool(env.get('set_permissions') or True) and check_perms(home_dir, env['sys_uid'], env['sys_gid'], 0o700) is False:
+            set_perms(home_dir, env['sys_user'], env['sys_group'], 0o700)
+            logging.info(f"User is currently root. Will change directory ownership and downgrade run user to to {env['sys_user']}")
         else:
-            logging.info(f"User is currently root. Will downgrade run user to to {env['run_user']}")
+            logging.info(f"User is currently root. Will downgrade run user to to {env['sys_user']}")
 
         cmd = '/bin/su'
-        args = [cmd, env['run_user'], '-c', start_cmd]
+        args = [cmd, env['sys_user'], '-c', start_cmd]
     else:
         cmd = '/bin/sh'
         args = [cmd, '-c', start_cmd]

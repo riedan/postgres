@@ -4,6 +4,10 @@ FROM postgres:9.6-alpine
 ENV SYS_GROUP postgres
 ENV SYS_USER postgres
 
+ENV SYS_UID                                         2001
+ENV SYS_GID                                         2001
+
+
 ENV PG_MAX_WAL_SENDERS 8
 ENV PG_WAL_KEEP_SEGMENTS 8
 
@@ -74,8 +78,8 @@ RUN set -ex \
 RUN set -eux; \
  pip3 install --upgrade pip && \
  pip3 install --upgrade setuptools && \
- pip3 install patroni && \
  pip3 install psycopg2 pyyaml && \
+ pip3 install patroni[etcd,aws,consul,zookeeper]&& \
  update-ca-certificates
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
