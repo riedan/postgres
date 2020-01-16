@@ -35,8 +35,7 @@ ENV LANG C
 
 RUN set -ex \
 	\
-	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2 \
-	&& mkdir
+	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2
 
 RUN set -eux; \
  pip3 install --upgrade pip3 && \
@@ -51,8 +50,8 @@ RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 # override this on secondary nodes
 ENV PRIMARY_NODE=localhost
 
-ENV PG_REP_USER=repmgr
-ENV PG_REP_DB=repmgr
+ENV PG_REP_USER=patroni
+ENV PG_REP_DB=patroni
 ENV PG_CONFIG_DIR=/var/lib/postgresql/conf
 ENV PGPASSFILE="$PG_CONFIG_DIR/.pgpass"
 ENV POSTGRES_PORT=5432
