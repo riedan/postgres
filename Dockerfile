@@ -78,7 +78,7 @@ RUN apk add --update iputils
 
 USER    root
 
-RUN chmod +x  /usr/local/bin/docker-entrypoint.sh  /docker-entrypoint-initdb.d/*.sh
+RUN chmod +x  /usr/local/bin/docker-entrypoint.sh  /docker-entrypoint-initdb.d/*.sh  /docker-entrypoint-initdb.d/*.py
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 VOLUME /var/lib/postgresql
