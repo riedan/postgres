@@ -41,6 +41,7 @@ RUN set -ex \
 	      git \
 	      bison \
         coreutils \
+        python3-dev \
         dpkg-dev dpkg \
         flex \
         gcc \
