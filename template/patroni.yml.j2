@@ -8,9 +8,7 @@ restapi:
 {% if restapi_patroni_cert is defined and restapi_patroni_cert|length %}  cafile: {{ restapi_patroni_cacert  | default('localhost') }}
   certfile: {{ restapi_patroni_cert  | default('localhost')}}
   keyfile: {{ restapi_patroni_key  | default('localhost') }}
-{% endif %}
-
-{% if restapi_patroni_username is defined and restapi_patroni_password|length %}  authentication:
+{% endif %}{% if restapi_patroni_username is defined and restapi_patroni_password|length %}  authentication:
     username: {{ restapi_patroni_username  | default('user') }}
     password: {{ restapi_patroni_password  | default('password') }}
 {% endif %}
