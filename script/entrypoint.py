@@ -2,7 +2,6 @@
 import os
 import shutil
 import sys
-from subprocess
 from entrypoint_helpers import env, gen_cfg, gen_container_id, str2bool, start_app,  set_perms, set_ownership, activate_ssl
 
 
