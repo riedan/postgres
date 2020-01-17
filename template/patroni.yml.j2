@@ -1,5 +1,5 @@
 scope: {{ patroni_scope}}
-namespace: /{consul_namespace | default('database')}/
+namespace: "/{{ consul_namespace | default('database')}}/"
 name: {{ node_host  }}
 
 restapi:
