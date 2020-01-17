@@ -15,7 +15,7 @@ restapi:
 
 consul:
   host: {{ consul_host }}
-  token: {{ consul_token }}
+  {% if consul_token is defined and consul_patroni_cert|length %}  token: {{ consul_token }} {% endif %}
   scheme: {{ consul_scheme | default ('https')}}
 {% if consul_patroni_cert is defined and consul_patroni_cert|length %}  cacert: {{ consul_patroni_cacert }}
   cert: {{ consul_patroni_cert }}
@@ -24,19 +24,19 @@ consul:
 
 bootstrap:
   dcs:
-    ttl: 30
-    loop_wait: 10
-    retry_timeout: 10
-    maximum_lag_on_failover: 1048576
+    ttl:  {{ patroni_dcs_ttl | default('30') }}
+    loop_wait:  {{ patroni_dcs_loop_wait | default('10') }}
+    retry_timeout:  {{ patroni_dcs_retry_timeout | default('10') }}
+    maximum_lag_on_failover: {{ pat_dcs_maximum_lag_on_failover | default('1048576') }}
     postgresql:
       use_pg_rewind: true
       parameters:
-        wal_level: hot_standby
-        hot_standby: "on"
-        wal_keep_segments: {{ pg_wal_keep_segments }}
-        max_wal_senders: {{ pg_max_wal_senders }}
-        max_replication_slots: 10
-        wal_log_hints: "on"
+        wal_level:  {{ pg_wal_level | default ('hot_standby') }}
+        hot_standby: "{{ pg_hot_standby | default ('on') }}"
+        wal_keep_segments: {{ pg_wal_keep_segments | default ('8') }}
+        max_wal_senders: {{ pg_max_wal_senders | default('8')}}
+        max_replication_slots: {{ pg_max_replication_slots | default('10')}}
+        wal_log_hints: "{{ pg_wal_log_hints | default ('on') }}"
 
   initdb:
   - locale: UTF8
