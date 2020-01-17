@@ -32,6 +32,9 @@ bootstrap:
       use_pg_rewind:  {{ pg_use_pg_rewind | default ('true') }}
       use_slots:  {{ pg_use_slots | default ('true') }}
       parameters:
+        listen_addresses: "*"
+        port: {{ postgres_port }}
+        max_connections: 100
         wal_level:  {{ pg_wal_level | default ('hot_standby') }}
         hot_standby: "{{ pg_hot_standby | default ('on') }}"
         hot_standby_feedback: "{{ pg_hot_standby_feedback | default ('on') }}"
@@ -74,8 +77,8 @@ bootstrap:
         - replication
 
 postgresql:
-  listen: 0.0.0.0:5432
-  connect_address: {{ hostname | default('localhost') }}:{{ pg_port | default('5432')}}
+  listen: 0.0.0.0:{{ postgres_port }}
+  connect_address: {{ hostname | default('localhost') }}:{{ pg_port | default(postgres_port)}}
   data_dir: {{ pgdata }}
   pgpass: {{ pg_config_dir }}/.pgpass
   authentication:

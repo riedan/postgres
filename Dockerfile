@@ -67,16 +67,11 @@ RUN set -eux; \
  pip3 install patroni[etcd,aws,consul,zookeeper] python-consul dnspython boto mock requests six kazoo click tzlocal prettytable && \
  update-ca-certificates
 
-
-
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
 
-# override this on secondary nodes
-ENV PRIMARY_NODE=localhost
-
 ENV PG_REP_USER=patroni
-ENV PG_REP_DB=patroni
+ENV PG_REP_DB=replication
 ENV PG_CONFIG_DIR=/var/lib/postgresql/conf
 ENV PGPASSFILE="$PG_CONFIG_DIR/.pgpass"
 ENV POSTGRES_PORT=5432
