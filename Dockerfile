@@ -98,8 +98,6 @@ RUN chmod +x /entrypoint_helpers.py
 VOLUME /var/lib/postgresql
 VOLUME /var/lib/postgresql/data
 
-
-
 EXPOSE 5432
 EXPOSE 8008
 CMD ["/entrypoint.py"]
