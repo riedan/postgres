@@ -1,4 +1,3 @@
-# vim:set ft=dockerfile:
 FROM postgres:9.6-alpine
 
 ENV SYS_GROUP postgres
@@ -11,30 +10,10 @@ ENV SYS_GID                                         2001
 ENV PG_MAX_WAL_SENDERS 8
 ENV PG_WAL_KEEP_SEGMENTS 8
 
-ENV REPMGR_PID_FILE /tmp/repmgrd.pid
-
-ARG REPMGR_VERSION=5.0.0
-ARG REPMGR_SHA1=f0ae71c4f0a75fa2545661f9565b2b0c59a91357
-
-
-#create user if not exist
-RUN set -eux; \
-	getent group ${SYS_GROUP} || addgroup -S ${SYS_GROUP}; \
-	getent passwd ${SYS_USER} || adduser -S ${SYS_USER}  -G ${SYS_GROUP} -s "/bin/sh";
-
-
-RUN set -ex; \
-	postgresHome="$(getent passwd ${SYS_USER})"; \
-	postgresHome="$(echo "$postgresHome" | cut -d: -f6)"; \
-	[ "$postgresHome" = '/var/lib/postgresql' ]; \
-	mkdir -p "$postgresHome"; \
-	chown -R ${SYS_USER}:${SYS_GROUP} "$postgresHome"
-
 
 # make the "C" locale so postgres will be utf-8 enabled by default
 # alpine doesn't require explicit locale-file generation
 ENV LANG C
-
 
 RUN set -ex \
 	\
@@ -67,12 +46,28 @@ RUN set -ex \
 	\
 	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2 tini openssl
 
+
+#create user if not exist
+RUN set -eux; \
+	getent group ${SYS_GROUP} || addgroup -g ${RUN_GID} -S ${SYS_GROUP}; \
+	getent passwd ${SYS_USER} || adduser  --uid ${RUN_UID}  -S ${SYS_USER}  -G ${SYS_GROUP} -s "/bin/bash";
+
+
+RUN set -ex; \
+	postgresHome="$(getent passwd ${SYS_USER})"; \
+	postgresHome="$(echo "$postgresHome" | cut -d: -f6)"; \
+	[ "$postgresHome" = '/var/lib/postgresql' ]; \
+	mkdir -p "$postgresHome"; \
+	chown -R ${SYS_USER}:${SYS_GROUP} "$postgresHome"
+
 RUN set -eux; \
  pip3 install --upgrade pip && \
  pip3 install --upgrade setuptools && \
  pip3 install psycopg2 pyyaml && \
  pip3 install patroni[etcd,aws,consul,zookeeper] python-consul dnspython boto mock requests six kazoo click tzlocal prettytable && \
  update-ca-certificates
+
+
 
 RUN  chown -R ${SYS_USER}:${SYS_GROUP} "$PGDATA"
 
