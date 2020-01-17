@@ -18,6 +18,7 @@ restapi:
 consul:
   host: {{ consul_host }}
   token: {{ consul_token }}
+  scheme: {{ consul_scheme | default ('https')}}
 {% if consul_patroni_cert is defined and consul_patroni_cert|length %}  cacert: {{ consul_patroni_cacert }}
   cert: {{ consul_patroni_cert }}
   key: {{ consul_patroni_key }}
