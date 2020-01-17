@@ -86,35 +86,6 @@ def str2bool(v):
     return False
 
 
-def activate_ssl(web_path, path_keystore, password_keystore, path_key, path_crt, path_ca, password_p12, path_p12):
-    if  os.path.exists(web_path):
-        ET.register_namespace('', "http://java.sun.com/xml/ns/javaee")
-        ET.register_namespace('xsi', "http://www.w3.org/2001/XMLSchema-instance")
-        tree = ET.parse(web_path)
-        root = tree.getroot()
-
-        new_security_constraint =  ET.SubElement(root, 'security-constraint')
-        web_resource_collection = ET.SubElement(new_security_constraint, 'web-resource-collection')
-        user_data_constraint = ET.SubElement(new_security_constraint, 'user-data-constraint')
-
-
-        web_resource_name = ET.SubElement(web_resource_collection, 'web-resource-name')
-        url_pattern = ET.SubElement(web_resource_collection, 'url-pattern')
-        url_pattern1 = ET.SubElement(web_resource_collection, 'url-pattern')
-        url_pattern2 = ET.SubElement(web_resource_collection, 'url-pattern')
-        url_pattern3 = ET.SubElement(web_resource_collection, 'url-pattern')
-
-        transport_guarantee = ET.SubElement(user_data_constraint, 'transport-guarantee')
-
-        web_resource_name.text = "all-except-attachments"
-        url_pattern.text = "*.jsp"
-        url_pattern1.text = "*.jspa"
-        url_pattern2.text = "/browse/*"
-        url_pattern3.text = "/issues/*"
-        transport_guarantee.text = "CONFIDENTIAL"
-
-        tree.write(web_path)
-
 ######################################################################
 # Start App as the correct user
 
