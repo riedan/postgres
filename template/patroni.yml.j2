@@ -1,5 +1,5 @@
 scope: {{ patroni_scope}}
-namespace: /{consul_namespace}/
+namespace: /{consul_namespace | default('database')}/
 name: {{ node_host  }}
 
 restapi:
@@ -49,8 +49,8 @@ bootstrap:
 
 
   users:
-    {{ patroni_db_admin_user | default('admin') }}:
-      password: {{ patroni_db_admin_password | default('admin') }}
+    {{ patroni_db_admin_user | default('patroni_admin') }}:
+      password: {{ patroni_db_admin_password | default(postgres_password) | default('admin')}}
       options:
         - createrole
         - createdb
