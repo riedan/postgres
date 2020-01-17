@@ -29,14 +29,23 @@ bootstrap:
     retry_timeout:  {{ patroni_dcs_retry_timeout | default('10') }}
     maximum_lag_on_failover: {{ pat_dcs_maximum_lag_on_failover | default('1048576') }}
     postgresql:
-      use_pg_rewind: true
+      use_pg_rewind:  {{ pg_use_pg_rewind | default ('true') }}
+      use_slots:  {{ pg_use_slots | default ('true') }}
       parameters:
         wal_level:  {{ pg_wal_level | default ('hot_standby') }}
         hot_standby: "{{ pg_hot_standby | default ('on') }}"
+        hot_standby_feedback: "{{ pg_hot_standby_feedback | default ('on') }}"
         wal_keep_segments: {{ pg_wal_keep_segments | default ('8') }}
         max_wal_senders: {{ pg_max_wal_senders | default('8')}}
         max_replication_slots: {{ pg_max_replication_slots | default('10')}}
         wal_log_hints: "{{ pg_wal_log_hints | default ('on') }}"
+        synchronous_commit: "{{ pg_synchronous_commit | default ('off') }}"
+        synchronous_standby_names: "*"
+        ssl: "{{ pg_ssl | default ('off') }}"
+{% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}        ssl_cert_file: {{ pg_config_dir }}/root.crt
+        ssl_key_file: {{ pg_config_dir }}/root.crt
+        ssl_ca_file: {{ pg_config_dir }}/root.crt {% endif %}
+
 
   initdb:
   - locale: UTF8
@@ -54,15 +63,19 @@ bootstrap:
 
 
   users:
-    {{ patroni_db_admin_user | default('patroni_admin') }}:
-      password: {{ patroni_db_admin_password | default(postgres_password) | default('admin')}}
+    {{ postgres_user | default('postgres') }}:
+      password: {{ postgres_password | default('postgres')}}
       options:
         - createrole
         - createdb
+    {{ pg_rep_user | default('replication') }}:
+      password: {{ pg_rep_password | default('replication')}}
+      options:
+        - replication
 
 postgresql:
   listen: 0.0.0.0:5432
-  connect_address: {{ node_host }}:{{ pg_port }}
+  connect_address: {{ hostname | default('localhost') }}:{{ pg_port}}
   data_dir: {{ pgdata }}
   pgpass: {{ pg_config_dir }}/.pgpass
   authentication:
@@ -73,7 +86,7 @@ postgresql:
       username: {{ postgres_user }}
       password: {{ postgres_password }}
   parameters:
-    unix_socket_directories: '.'
+    unix_socket_directories: '/tmp'
 
 tags:
   nofailover: false
