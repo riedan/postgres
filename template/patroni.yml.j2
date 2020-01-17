@@ -32,6 +32,13 @@ bootstrap:
     maximum_lag_on_failover: 1048576
     postgresql:
       use_pg_rewind: true
+      parameters:
+        wal_level: hot_standby
+        hot_standby: "on"
+        wal_keep_segments: {{ pg_wal_keep_segments }}
+        max_wal_senders: {{ pg_max_wal_senders }}
+        max_replication_slots: 10
+        wal_log_hints: "on"
 
   initdb:
   - locale: UTF8
