@@ -45,8 +45,8 @@ bootstrap:
         synchronous_commit: "{{ pg_synchronous_commit | default ('off') }}"
         synchronous_standby_names: "*"
         ssl: "{{ pg_ssl | default ('off') }}"
-{% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}        ssl_cert_file: {{ pg_config_dir }}/root.crt
-        ssl_key_file: {{ pg_config_dir }}/root.crt
+{% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}        ssl_cert_file: {{ pg_config_dir }}/server.crt
+        ssl_key_file: {{ pg_config_dir }}/server.key
         ssl_ca_file: {{ pg_config_dir }}/root.crt {% endif %}
 
 
