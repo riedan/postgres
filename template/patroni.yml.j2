@@ -75,7 +75,7 @@ bootstrap:
 
 postgresql:
   listen: 0.0.0.0:5432
-  connect_address: {{ hostname | default('localhost') }}:{{ pg_port}}
+  connect_address: {{ hostname | default('localhost') }}:{{ pg_port | default('5432')}}
   data_dir: {{ pgdata }}
   pgpass: {{ pg_config_dir }}/.pgpass
   authentication:

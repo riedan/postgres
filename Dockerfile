@@ -65,7 +65,7 @@ RUN set -ex \
 
 RUN set -ex \
 	\
-	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2
+	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2 tini openssl
 
 RUN set -eux; \
  pip3 install --upgrade pip && \
@@ -95,9 +95,7 @@ RUN git clone https://github.com/mreithub/pg_recall.git /root/pg_recall/
 RUN cd /root/pg_recall/; make install
 
 
-COPY postgresql.conf /usr/local/share/postgresql/postgresql.conf.repmgr
-COPY docker-entrypoint.sh /usr/local/bin/
-COPY script/* /docker-entrypoint-initdb.d/
+COPY script/* /
 COPY template/* /usr/local/share/postgresql/
 
 RUN dos2unix /usr/local/bin/docker-entrypoint.sh
@@ -106,10 +104,9 @@ RUN dos2unix /docker-entrypoint-initdb.d/*.sh
 RUN apk del .dd2
 RUN apk add --update iputils
 
-USER    root
 
-RUN chmod +x  /usr/local/bin/docker-entrypoint.sh  /docker-entrypoint-initdb.d/*.sh  /docker-entrypoint-initdb.d/*.py
-ENTRYPOINT ["docker-entrypoint.sh"]
+RUN chmod +x /entrypoint.py
+RUN chmod +x /entrypoint_helpers.py
 
 VOLUME /var/lib/postgresql
 VOLUME /var/lib/postgresql/data
@@ -117,4 +114,6 @@ VOLUME /var/lib/postgresql/data
 
 
 EXPOSE 5432
-CMD ["postgres"]
+EXPOSE 8008
+CMD ["/entrypoint.py"]
+ENTRYPOINT ["tini", "--"]
