@@ -21,6 +21,4 @@ if ! [ -f $PGPASSFILE ]; then
 	PGPASSFILE=${PG_CONFIG_DIR}/.pgpass
 fi
 
-chown  ${SYS_USER}:${SYS_GROUP} ${PG_CONFIG_DIR}/repmgr.conf
-
 python3  /docker-entrypoint-initdb.d/04-patroni.py
