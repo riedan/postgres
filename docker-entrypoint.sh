@@ -193,7 +193,7 @@ fi
 
 
 
-(sleep 10 ; exec su-exec "${SYS_USER}:${SYS_GROUP}"  "patroni $PG_CONFIG_DIR/patroni.yml" ) &
+(sleep 10 ; exec su-exec ${SYS_USER}  "patroni $PG_CONFIG_DIR/patroni.yml" ) &
 
 
 exec "$@"
