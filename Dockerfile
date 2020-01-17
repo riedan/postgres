@@ -88,9 +88,6 @@ RUN cd /root/pg_recall/; make install
 COPY script/* /
 COPY template/* /usr/local/share/postgresql/
 
-RUN dos2unix /usr/local/bin/docker-entrypoint.sh
-RUN dos2unix /docker-entrypoint-initdb.d/*.sh
-
 RUN apk del .dd2
 RUN apk add --update iputils
 
