@@ -61,14 +61,6 @@ RUN set -ex \
         perl-ipc-run \
         util-linux-dev \
         zlib-dev \
-  && curl -sSL https://github.com/2ndQuadrant/repmgr/archive/v${REPMGR_VERSION}.tar.gz  -o ${REPMGR_VERSION}.tar.gz \
-  && echo "${REPMGR_SHA1}  ${REPMGR_VERSION}.tar.gz" | sha1sum -c - \
-  && tar zxf ${REPMGR_VERSION}.tar.gz \
-  && cd repmgr-${REPMGR_VERSION} \
-  && ./configure \
-  && make USE_PGXS=1 install \
-  && cd .. \
-  && rm -Rf repmgr-${REPMGR_VERSION} ${REPMGR_VERSION}.tar.gz \
   && update-ca-certificates
 
 RUN set -ex \

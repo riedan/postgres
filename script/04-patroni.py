@@ -12,6 +12,4 @@ RUN_GROUP = env['sys_group']
 PG_DATA = env['pgdata']
 PG_CONFIG_DIR = env['pg_config_dir']
 
-gen_cfg('patroni.yml.j2', f'{PG_CONFIG_DIR}/patroni.yml')
-
-start_app(f'patroni ', PG_DATA, name='Patroni')
+gen_cfg('patroni.yml.j2', f'{PG_CONFIG_DIR}/patroni.yml' , user=RUN_USER, group=RUN_GROUP,mode=0o640 , overwrite=True)

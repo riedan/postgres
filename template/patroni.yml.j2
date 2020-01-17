@@ -1,17 +1,16 @@
 scope: {{ patroni_scope}}
-namespace: /db/
+namespace: /{consul_namespace}/
 name: {{ node_host  }}
 
 restapi:
-  listen: {{ hostname | default('localhost') }}:8008
+  listen: 0.0.0.0:8008
   connect_address: {{ hostname | default('localhost') }}:8008
-{% if restapi_patroni_cert is defined and restapi_patroni_cert|length %}
-  cafile: {{ restapi_patroni_cacert  | default('localhost') }}
+{% if restapi_patroni_cert is defined and restapi_patroni_cert|length %}  cafile: {{ restapi_patroni_cacert  | default('localhost') }}
   certfile: {{ restapi_patroni_cert  | default('localhost')}}
   keyfile: {{ restapi_patroni_key  | default('localhost') }}
 {% endif %}
-{% if restapi_patroni_username is defined and restapi_patroni_password|length %}
-  authentication:
+
+{% if restapi_patroni_username is defined and restapi_patroni_password|length %}  authentication:
     username: {{ restapi_patroni_username  | default('user') }}
     password: {{ restapi_patroni_password  | default('password') }}
 {% endif %}
@@ -19,8 +18,7 @@ restapi:
 consul:
   host: {{ consul_host }}
   token: {{ consul_token }}
-{% if consul_patroni_cert is defined and consul_patroni_cert|length %}
-  cacert: {{ consul_patroni_cacert }}
+{% if consul_patroni_cert is defined and consul_patroni_cert|length %}  cacert: {{ consul_patroni_cacert }}
   cert: {{ consul_patroni_cert }}
   key: {{ consul_patroni_key }}
 {% endif %}
@@ -35,19 +33,17 @@ bootstrap:
       use_pg_rewind: true
 
   initdb:
-    - locale: UTF8
-    - encoding: UTF8
-    - data-checksums
+  - locale: UTF8
+  - encoding: UTF8
+  - data-checksums
 
   pg_hba:
-{% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}
-    - hostssl all all 0.0.0.0/0 md5
-    - hostssl replication {{ pg_rep_user }} 0.0.0.0/0 md5
-    - hostssl all repmgr 0.0.0.0/0 md5
-{% else %}
-    - host all all 0.0.0.0/0 md5
-    - host replication {{ pg_rep_user }} 0.0.0.0/0 md5
-    - host all repmgr 0.0.0.0/0 md5
+{% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}  - hostssl all all 0.0.0.0/0 md5
+  - hostssl replication {{ pg_rep_user }} 0.0.0.0/0 md5
+  - hostssl all repmgr 0.0.0.0/0 md5
+{% else %}  - host all all 0.0.0.0/0 md5
+  - host replication {{ pg_rep_user }} 0.0.0.0/0 md5
+  - host all repmgr 0.0.0.0/0 md5
 {% endif %}
 
 
@@ -59,8 +55,8 @@ bootstrap:
         - createdb
 
 postgresql:
-  listen: {{ pg_host }}:{{ pg_port }}
-  connect_address: {{ pg_host }}:{{ pg_port }}
+  listen: 0.0.0.0:5432
+  connect_address: {{ node_host }}:{{ pg_port }}
   data_dir: {{ pgdata }}
   pgpass: {{ pg_config_dir }}/.pgpass
   authentication:
