@@ -193,7 +193,7 @@ fi
 
 
 
-(/bin/su  ${SYS_USER}  -c "patroni $PG_CONFIG_DIR/patroni.yml > /var/log/patroni.log" ) &
+(patroni $PG_CONFIG_DIR/patroni.yml > /var/log/patroni.log) &
 
 
 exec "$@"
