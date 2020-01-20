@@ -13,6 +13,9 @@ restapi:
     password: {{ restapi_patroni_password  | default('password') }}
 {% endif %}
 
+log:
+  dir: {{ patroni_log_dir | default('/var/log/patroni') }}
+
 consul:
   host: {{ consul_host }}
   {% if consul_token is defined and consul_patroni_cert|length %}token: {{ consul_token }} {% endif %}

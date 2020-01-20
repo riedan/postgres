@@ -79,7 +79,8 @@ ENV PGSSLMODE=prefer
 
 
 
-RUN mkdir -p "$PG_CONFIG_DIR" &&  chown -R ${SYS_USER}:${SYS_GROUP} "$PG_CONFIG_DIR"
+RUN mkdir -p "$PG_CONFIG_DIR" &&  chown -R ${SYS_USER}:${SYS_GROUP} "$PG_CONFIG_DIR" \
+ && mkdir -p "/var/log/patroni" &&  chown -R ${SYS_USER}:${SYS_GROUP} "/var/log/patroni"
 
 RUN git clone https://github.com/mreithub/pg_recall.git /root/pg_recall/
 RUN cd /root/pg_recall/; make install
