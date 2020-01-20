@@ -62,8 +62,6 @@ bootstrap:
   - host replication {{ pg_rep_user }} 0.0.0.0/0 md5
   - host all repmgr 0.0.0.0/0 md5
 
-  post_bootstrap: /post_bootstrap.sh
-
   users:
     {{ postgres_user | default('postgres') }}:
       password: "{{ postgres_password | default('postgres')}}"
@@ -74,6 +72,8 @@ bootstrap:
       password: "{{ pg_rep_password | default('replication')}}"
       options:
         - replication
+
+  post_bootstrap: /post_bootstrap.sh
 
 postgresql:
   listen: "0.0.0.0:{{ postgres_port }}"
