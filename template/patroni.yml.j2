@@ -5,19 +5,19 @@ name: {{ node_host  }}
 restapi:
   listen: 0.0.0.0:8008
   connect_address: {{ node_host | default('localhost') }}:8008
-{% if restapi_patroni_cert is defined and restapi_patroni_cert|length %}  cafile: {{ restapi_patroni_cacert  | default('localhost') }}
+  {% if restapi_patroni_cert is defined and restapi_patroni_cert|length %}cafile: {{ restapi_patroni_cacert  | default('localhost') }}
   certfile: {{ restapi_patroni_cert  | default('localhost')}}
   keyfile: {{ restapi_patroni_key  | default('localhost') }}
-{% endif %}{% if restapi_patroni_username is defined and restapi_patroni_password|length %}  authentication:
+  {% endif %}{% if restapi_patroni_username is defined and restapi_patroni_password|length %}authentication:
     username: {{ restapi_patroni_username  | default('user') }}
     password: {{ restapi_patroni_password  | default('password') }}
 {% endif %}
 
 consul:
   host: {{ consul_host }}
-{% if consul_token is defined and consul_patroni_cert|length %}  token: {{ consul_token }} {% endif %}
+  {% if consul_token is defined and consul_patroni_cert|length %}token: {{ consul_token }} {% endif %}
   scheme: {{ consul_scheme | default ('https')}}
-{% if consul_patroni_cert is defined and consul_patroni_cert|length %}  cacert: {{ consul_patroni_cacert }}
+  {% if consul_patroni_cert is defined and consul_patroni_cert|length %}cacert: {{ consul_patroni_cacert }}
   cert: {{ consul_patroni_cert }}
   key: {{ consul_patroni_key }}
 {% endif %}
@@ -32,7 +32,6 @@ bootstrap:
       use_pg_rewind:  {{ pg_use_pg_rewind | default ('true') }}
       use_slots:  {{ pg_use_slots | default ('true') }}
       parameters:
-        listen_addresses: "*"
         port: {{ postgres_port }}
         max_connections: 100
         wal_level:  {{ pg_wal_level | default ('hot_standby') }}
@@ -44,35 +43,35 @@ bootstrap:
         wal_log_hints: "{{ pg_wal_log_hints | default ('on') }}"
         synchronous_commit: "{{ pg_synchronous_commit | default ('off') }}"
         synchronous_standby_names: "*"
+        checkpoint_timeout: 30
         ssl: "{{ pg_ssl | default ('off') }}"
-{% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}        ssl_cert_file: {{ pg_config_dir }}/server.crt
+        {% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}ssl_cert_file: {{ pg_config_dir }}/server.crt
         ssl_key_file: {{ pg_config_dir }}/server.key
         ssl_ca_file: {{ pg_config_dir }}/root.crt {% endif %}
 
 
   initdb:
-  - locale: UTF8
   - encoding: UTF8
   - data-checksums
 
   pg_hba:
-{% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}  - hostssl all all 0.0.0.0/0 md5
+  {% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}- hostssl all all 0.0.0.0/0 md5
   - hostssl replication {{ pg_rep_user }} 0.0.0.0/0 md5
   - hostssl all repmgr 0.0.0.0/0 md5 {% endif %}
   - host all all 0.0.0.0/0 md5
   - host replication {{ pg_rep_user }} 0.0.0.0/0 md5
   - host all repmgr 0.0.0.0/0 md5
 
-  post_bootstrap: TODO- POST_bootstrap script
+  post_bootstrap: /post_bootstrap.sh
 
-users:
+  users:
     {{ postgres_user | default('postgres') }}:
-      password: {{ postgres_password | default('postgres')}}
+      password: "{{ postgres_password | default('postgres')}}"
       options:
         - createrole
         - createdb
     {{ pg_rep_user | default('replication') }}:
-      password: {{ pg_rep_password | default('replication')}}
+      password: "{{ pg_rep_password | default('replication')}}"
       options:
         - replication
 
@@ -80,16 +79,26 @@ postgresql:
   listen: "0.0.0.0:{{ postgres_port }}"
   connect_address: {{ node_host | default('localhost') }}:{{ pg_port | default(postgres_port)}}
   data_dir: {{ pgdata }}
+  config_dir:  {{ pg_config_dir | default(pgdata) }}
   pgpass: {{ pg_config_dir }}/.pgpass
   authentication:
     replication:
-      username: {{ pg_rep_user }}
-      password:  {{pg_rep_password}}
+      username: "{{ pg_rep_user }}"
+      password:  "{{pg_rep_password}}"
     superuser:
-      username: {{ postgres_user }}
-      password: {{ postgres_password }}
+      username: "{{ postgres_user }}"
+      password: "{{ postgres_password }}"
   parameters:
     unix_socket_directories: '/tmp'
+    ssl: "{{ pg_ssl | default ('off') }}"
+    {% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}ssl_cert_file: {{ pg_config_dir }}/server.crt
+    ssl_key_file: {{ pg_config_dir }}/server.key
+    ssl_ca_file: {{ pg_config_dir }}/root.crt {% endif %}
+
+watchdog:
+  mode: automatic # Allowed values: off, automatic, required
+  device: /dev/watchdog
+  safety_margin: 5
 
 
 tags:
