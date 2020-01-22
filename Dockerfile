@@ -44,7 +44,7 @@ RUN set -ex \
 
 RUN set -ex \
 	\
-	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2 tini openssl
+	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2 tini openssl curl
 
 
 #create user if not exist
