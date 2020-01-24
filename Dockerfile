@@ -12,7 +12,6 @@ ENV REPMGR_PID_FILE /tmp/repmgrd.pid
 ARG REPMGR_VERSION=4.4.0
 ARG REPMGR_SHA1=e41a42dc5267e1b5f19d13f43a243eb7bc34d1a3
 
-
 #create user if not exist
 RUN set -eux; \
 	getent group ${SYS_GROUP} || addgroup -S ${SYS_GROUP}; \
