@@ -10,7 +10,6 @@ ENV SYS_GID                                         2001
 ENV PG_MAX_WAL_SENDERS 8
 ENV PG_WAL_KEEP_SEGMENTS 8
 
-
 # make the "C" locale so postgres will be utf-8 enabled by default
 # alpine doesn't require explicit locale-file generation
 ENV LANG C
