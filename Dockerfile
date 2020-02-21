@@ -43,7 +43,7 @@ RUN set -ex \
 
 RUN set -ex \
 	\
-	&& apk add --no-cache  ca-certificates su-exec bash python3 py3-psycopg2 py3-jinja2 tini openssl curl
+	&& apk add --no-cache  ca-certificates su-exec bash python3 tini openssl curl
 
 
 #create user if not exist
@@ -62,7 +62,7 @@ RUN set -ex; \
 RUN set -eux; \
  pip3 install --upgrade pip && \
  pip3 install --upgrade setuptools && \
- pip3 install psycopg2 pyyaml && \
+ pip3 install psycopg2 pyyaml jinja2 && \
  pip3 install patroni[etcd,aws,consul,zookeeper] python-consul dnspython boto mock requests six kazoo click tzlocal prettytable watchdog && \
  update-ca-certificates
 
