@@ -1,10 +1,10 @@
-FROM postgres:9.6-alpine
+FROM postgres:10-alpine
 
 ENV SYS_GROUP postgres
 ENV SYS_USER postgres
 
-ENV SYS_UID                                         2001
-ENV SYS_GID                                         2001
+ENV SYS_UID                                         70
+ENV SYS_GID                                         70
 
 
 ENV PG_MAX_WAL_SENDERS 8
