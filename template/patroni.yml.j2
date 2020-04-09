@@ -1,0 +1,110 @@
+scope: {{ patroni_scope}}
+namespace: "/{{ consul_namespace | default('database')}}/"
+name: {{ hostname  }}
+
+restapi:
+  listen: 0.0.0.0:8008
+  connect_address: {{ node_host | default('localhost') }}:8008
+  {% if restapi_patroni_cert is defined and restapi_patroni_cert|length %}cafile: {{ restapi_patroni_cacert  | default('localhost') }}
+  certfile: {{ restapi_patroni_cert  | default('localhost')}}
+  keyfile: {{ restapi_patroni_key  | default('localhost') }}
+  {% endif %}{% if restapi_patroni_username is defined and restapi_patroni_password|length %}authentication:
+    username: {{ restapi_patroni_username  | default('user') }}
+    password: {{ restapi_patroni_password  | default('password') }}
+{% endif %}
+
+log:
+  dir: {{ patroni_log_dir | default('/var/log/patroni') }}
+
+consul:
+  host: {{ consul_host }}
+  {% if consul_token is defined and consul_patroni_cert|length %}token: {{ consul_token }}{% endif %}
+  scheme: {{ consul_scheme | default ('https')}}
+  {% if consul_patroni_cert is defined and consul_patroni_cert|length %}cacert: {{ consul_patroni_cacert }}
+  cert: {{ consul_patroni_cert }}
+  key: {{ consul_patroni_key }}
+{% endif %}
+
+bootstrap:
+  dcs:
+    ttl:  {{ patroni_dcs_ttl | default('30') }}
+    loop_wait:  {{ patroni_dcs_loop_wait | default('10') }}
+    retry_timeout:  {{ patroni_dcs_retry_timeout | default('10') }}
+    maximum_lag_on_failover: {{ pat_dcs_maximum_lag_on_failover | default('1048576') }}
+    postgresql:
+      use_pg_rewind:  {{ pg_use_pg_rewind | default ('true') }}
+      use_slots:  {{ pg_use_slots | default ('true') }}
+      parameters:
+        port: {{ postgres_port }}
+        max_connections: 100
+        wal_level:  {{ pg_wal_level | default ('hot_standby') }}
+        hot_standby: "{{ pg_hot_standby | default ('on') }}"
+        hot_standby_feedback: "{{ pg_hot_standby_feedback | default ('on') }}"
+        wal_keep_segments: {{ pg_wal_keep_segments | default ('8') }}
+        max_wal_senders: {{ pg_max_wal_senders | default('8')}}
+        max_replication_slots: {{ pg_max_replication_slots | default('10')}}
+        wal_log_hints: "{{ pg_wal_log_hints | default ('on') }}"
+        synchronous_commit: "{{ pg_synchronous_commit | default ('off') }}"
+        synchronous_standby_names: "*"
+        checkpoint_timeout: 30
+        ssl: "{{ pg_ssl | default ('off') }}"
+        {% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}ssl_cert_file: {{ pg_config_dir }}/server.crt
+        ssl_key_file: {{ pg_config_dir }}/server.key
+        ssl_ca_file: {{ pg_config_dir }}/root.crt {% endif %}
+
+
+  initdb:
+  - encoding: UTF8
+  - data-checksums
+
+  pg_hba:
+  {% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}- hostssl all all 0.0.0.0/0 md5
+  - hostssl replication {{ pg_rep_user }} 0.0.0.0/0 md5
+  - hostssl all repmgr 0.0.0.0/0 md5 {% endif %}
+  - host all all 0.0.0.0/0 md5
+  - host replication {{ pg_rep_user }} 0.0.0.0/0 md5
+  - host all repmgr 0.0.0.0/0 md5
+
+  users:
+    {{ postgres_user | default('postgres') }}:
+      password: "{{ postgres_password | default('postgres')}}"
+      options:
+        - createrole
+        - createdb
+    {{ pg_rep_user | default('replication') }}:
+      password: "{{ pg_rep_password | default('replication')}}"
+      options:
+        - replication
+
+  post_bootstrap: /post_bootstrap.sh
+
+postgresql:
+  listen: "0.0.0.0:{{ postgres_port }}"
+  connect_address: {{ node_host | default('localhost') }}:{{ pg_port | default(postgres_port)}}
+  data_dir: {{ pgdata }}
+  pgpass: {{ pg_config_dir }}/.pgpass
+  authentication:
+    replication:
+      username: "{{ pg_rep_user }}"
+      password:  "{{pg_rep_password}}"
+    superuser:
+      username: "{{ postgres_user }}"
+      password: "{{ postgres_password }}"
+  parameters:
+    unix_socket_directories: '/tmp'
+    ssl: "{{ pg_ssl | default ('off') }}"
+    {% if pg_ssl is defined and pg_ssl|length  and pg_ssl == "on" %}ssl_cert_file: {{ pg_config_dir }}/server.crt
+    ssl_key_file: {{ pg_config_dir }}/server.key
+    ssl_ca_file: {{ pg_config_dir }}/root.crt {% endif %}
+
+watchdog:
+  mode: automatic # Allowed values: off, automatic, required
+  device: /dev/watchdog
+  safety_margin: 5
+
+
+tags:
+  nofailover: false
+  noloadbalance: false
+  clonefrom: false
+  nosync: false

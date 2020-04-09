@@ -187,27 +187,13 @@ if [ "$1" = 'postgres' ]; then
 		echo
 		echo 'PostgreSQL init process complete; ready for start up.'
 		echo
-	else
-    unset  PGPASSWORD
-    PGHOST=${PRIMARY_NODE}
-    PGSSLMODE=prefer
-
-    if [ -z "$PGHOST" ]; then
-      my_node=$(grep node_id ${PG_CONFIG_DIR}/repmgr.conf | cut -d= -f 2)
-      is_active=$(psql -qAt -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PRIMARY_NODE_PORT" -c "SELECT active FROM repmgr.nodes WHERE node_id=${my_node}")
-
-      if [ "${is_active}" != "true" ] && [ ${my_node} -gt 1 ]; then
-          echo 'rejoin cluster' >&2
-          repmgr -f ${PG_CONFIG_DIR}/repmgr.conf -h "$PGHOST" -U "$PG_REP_USER" -d "$PG_REP_DB" -p "$PRIMARY_NODE_PORT" standby register -k 30 -F || true
-      fi
-    fi
 	fi
 
 fi
 
 
 
-(sleep 10 ; repmgrd -vvv --pid-file="$REPMGR_PID_FILE" -f ${PG_CONFIG_DIR}/repmgr.conf ) &
+(patroni $PG_CONFIG_DIR/patroni.yml > /var/log/patroni.log) &
 
 
 exec "$@"
