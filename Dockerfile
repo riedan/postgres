@@ -59,7 +59,7 @@ RUN set -ex; \
 	mkdir -p "$postgresHome"; \
 	chown -R ${SYS_USER}:${SYS_GROUP} "$postgresHome"
 
-RUN set -eux; \
+RUN set -eux && \
  pip3 install --upgrade pip && \
  pip3 install --upgrade setuptools && \
  pip3 install psycopg2 pyyaml jinja2 && \
