@@ -54,7 +54,9 @@ bootstrap:
 
 
   initdb:
-  - encoding: UTF8
+  - encoding: {{ pg_encoding | default('UTF8') }}
+  - lc-collate: {{ pg_lc_collate | default('C.UTF-8') }}
+  - lc-ctype: {{ pg_lc_ctype | default('C.UTF-8') }}
   - data-checksums
 
   pg_hba:
